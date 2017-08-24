@@ -4,6 +4,17 @@ import javax.persistence.*;
 
 /**
  * Created by dannis on 2017/8/22.
+ * For test:
+ *
+     CREATE TABLE `t_user` (
+         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+         `name` varchar(60) DEFAULT NULL,
+         `pwd` varchar(60) DEFAULT NULL,
+     PRIMARY KEY (`id`)
+     ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+     insert into t_user (name,pwd) values ('dannis','123');
+     insert into t_user (name,pwd) values ('张三','123');
  */
 @Entity
 @Table(name = "t_user")
