@@ -3,7 +3,7 @@ package com.wyjf.app.api;
 /**
  * Created by Administrator on 2017/8/22.
  */
-public abstract class ApiResultFactory {
+public abstract class ApiFactory {
     public static ApiResult createResult(int code, String msg, Object val) {
         ApiResult result = new ApiResult();
         result.setCode(0);

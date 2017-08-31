@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +28,9 @@ public class WalletController {
     @RequestMapping(value = {"/test"}, method = RequestMethod.POST)
     public ApiResult test2() {
         List<String> r = Arrays.asList("1", "2", "3");
-        return ApiResultFactory.createResult(r);
+        return ApiFactory.createResult(r);
     }
+
+
 
 }
