@@ -23,15 +23,18 @@ alter table user comment '会员';
 
 
 drop table if exists user_info;
+
 /*==============================================================*/
 /* Table: user_info                                             */
 /*==============================================================*/
 create table user_info
 (
   uid                  bigint,
-  head_thunb           longblob comment '头像'
+  head_thumb           longblob comment '头像'
 );
+
 alter table user_info comment '会员信息';
+
 
 
 drop table if exists log_verifycode;
@@ -50,5 +53,45 @@ create table log_verifycode
 ) ENGINE=InnoDB;
 
 alter table log_verifycode comment '验证码记录';
+
+
+
+drop table if exists draw;
+
+/*==============================================================*/
+/* Table: draw                                                  */
+/*==============================================================*/
+create table draw
+(
+  did                  char(9) not null comment '盘口ID(YYYYMMDD[1-5])',
+  start_date           datetime not null comment '开始日期时间',
+  end_date             datetime not null comment '结束时间',
+  amount_up            decimal(19,2) not null default 0 comment '投涨总额',
+  amount_down          decimal(19,2) not null default 0 comment '投跌总额',
+  status               int not null default 0 comment '状态(0未结账，1已结账)',
+  primary key (did)
+) ENGINE=InnoDB;
+
+alter table draw comment '盘口';
+
+
+drop table if exists ticket;
+
+/*==============================================================*/
+/* Table: ticket                                                */
+/*==============================================================*/
+create table ticket
+(
+  tid                  bigint not null auto_increment comment '票ID',
+  did                  char(9) not null comment '盘口ID',
+  direction            int not null default 0 comment '方向（涨1、跌0）',
+  amount               decimal(19,2) not null default 0 comment '金额',
+  real_amount          decimal(19,2) not null default 0 comment '真实金额(有可能有虚拟数据)',
+  status               int not null default 0 comment '状态(未结账0,已结账1)',
+  primary key (tid)
+) ENGINE=InnoDB;
+
+alter table ticket comment '票';
+
 
 
