@@ -1,10 +1,10 @@
 package com.wyjf.app.api;
 
-import com.wyjf.app.domain.User;
-import com.wyjf.app.domain.LogVerifycode;
-import com.wyjf.app.repository.UserRepo;
-import com.wyjf.app.repository.VerfyCodeRepo;
 import com.wyjf.app.util.CommonUtil;
+import com.wyjf.common.domain.LogVerifycode;
+import com.wyjf.common.domain.User;
+import com.wyjf.common.repository.LogVerifyCodeRepo;
+import com.wyjf.common.repository.UserRepo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,7 +25,7 @@ public class UserController {
     @Autowired
     private UserRepo userRepo;
     @Autowired
-    private VerfyCodeRepo verfyCodeRepo;
+    private LogVerifyCodeRepo verfyCodeRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -35,7 +35,7 @@ public class UserController {
             @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "String")
     })
     public ApiResult reg(@RequestParam String phone, @RequestParam String pwd, @RequestParam String code) {
-        LogVerifycode logVerifycode = verfyCodeRepo.findByPhoneExist(phone);
+        LogVerifycode logVerifycode = null;// TODO: verfyCodeRepo.findByPhoneExist(phone);
         if(logVerifycode != null && code.equals(logVerifycode.getVerifycode())){
             User user = new User();
             user.setNickname(phone);
@@ -77,7 +77,7 @@ public class UserController {
     @RequestMapping(value = {"/verifyCode"}, method = RequestMethod.POST)
     public ApiResult verifyCode(@RequestParam String phone){
         //获取该电话号码10分钟之内是否存在有效的验证码
-        LogVerifycode oldLogVerifycode = verfyCodeRepo.findByPhoneExist(phone);
+        LogVerifycode oldLogVerifycode = null;//TODO: verfyCodeRepo.findByPhoneExist(phone);
         if(oldLogVerifycode != null && oldLogVerifycode.getId() != null){
             return ApiFactory.createResult(0, "success", oldLogVerifycode);
         }

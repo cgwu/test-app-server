@@ -1,6 +1,6 @@
-package com.wyjf.app.repository;
+package com.wyjf.common.repository;
 
-import com.wyjf.app.domain.User;
+import com.wyjf.common.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

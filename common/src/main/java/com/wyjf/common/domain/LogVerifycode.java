@@ -1,13 +1,13 @@
-package com.wyjf.app.domain;
+package com.wyjf.common.domain;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 /**
  * Created by zhuxulei on 2017/8/31 0031.
  */
 @Entity
-@Table(name = "t_verfycode")
+@Table(name = "log_verifycode")
 public class LogVerifycode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class LogVerifycode {
     private Date createTime;
     private int status;
 
-    public LogVerifycode(String phone, String verfycode){
+    public LogVerifycode(String phone, String verfycode) {
         this.setPhone(phone);
         this.setVerifycode(verfycode);
         this.setStatus(0);
@@ -63,4 +63,5 @@ public class LogVerifycode {
     public void setVerifycode(String verifycode) {
         this.verifycode = verifycode;
     }
+
 }

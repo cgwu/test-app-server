@@ -1,4 +1,4 @@
-package com.wyjf.app.domain;
+package com.wyjf.common.domain;
 
 import javax.persistence.*;
 

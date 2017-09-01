@@ -1,7 +1,7 @@
 package com.wyjf.app.api;
 
-import com.wyjf.app.domain.User;
-import com.wyjf.app.repository.UserRepo;
+import com.wyjf.common.domain.User;
+import com.wyjf.common.repository.UserRepo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
