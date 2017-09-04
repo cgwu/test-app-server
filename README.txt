@@ -3,3 +3,11 @@
 common模块：  公共类
 app模块:      api和backstage
 job模块:      自动任务
+
+#ref: http://blog.csdn.net/catoop/article/details/50588851
+通过参数指定一个外部配置文件，以 demo.jar 为例，方法如下：
+java -jar demo.jar --spring.config.location=/opt/config/application.properties
+
+notes:
+<th:block th:text="${application.static}"/>
+<link rel="stylesheet" href="/assets/css/bootstrap.css" th:href="@{${application.static}+'/assets/css/bootstrap.css'}" />
