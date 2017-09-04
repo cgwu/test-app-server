@@ -10,9 +10,9 @@ drop table if exists user;
 create table user
 (
   uid                  bigint not null auto_increment comment '会员ID',
-  phone                varchar(16) comment '电话号码',
+  phone                varchar(32) comment '电话号码',
   nickname             varchar(32) comment '昵称',
-  balance              decimal(19,2) not null default 0 comment '余额',
+  balance              decimal(19,2) not null comment '余额',
   gender               char(1) comment '性别',
   password_login       varchar(64) comment '登陆密码',
   password_trade       varchar(64) comment '提现密码',
@@ -20,6 +20,7 @@ create table user
 ) ENGINE=InnoDB;
 
 alter table user comment '会员';
+
 
 
 drop table if exists user_info;
@@ -82,7 +83,9 @@ drop table if exists ticket;
 /*==============================================================*/
 create table ticket
 (
-  tid                  bigint not null auto_increment comment '票ID',
+  tid                  bigint not null auto_increment comment '自增ID',
+  sid                  char(18) not null default '' comment '票ID(15位时间戳+3位随机数)',
+  uid                  bigint not null comment '会员ID',
   did                  char(9) not null comment '盘口ID',
   direction            int not null default 0 comment '方向（涨1、跌0）',
   amount               decimal(19,2) not null default 0 comment '金额',
