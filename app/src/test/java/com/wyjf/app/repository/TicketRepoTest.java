@@ -32,13 +32,13 @@ public class TicketRepoTest {
         Ticket ticket  = new Ticket();
         ticket.setDid("201709015");
         ticket.setStatus(1);
-        ticket.setAmount(123);
+        ticket.setAmount(123.315);
         ticket.setRealAmount(100);
         ticket.setDirection(0);
         ticket.setUid(6606);
 
         repo.save(ticket);
-        log.info("保存draw成功!");
+        log.info("保存测试票成功!");
     }
 
 }

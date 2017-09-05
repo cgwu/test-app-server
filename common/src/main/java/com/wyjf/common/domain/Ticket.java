@@ -8,17 +8,9 @@ import javax.persistence.Id;
  */
 @Entity
 public class Ticket {
-
-    /**
-     * tid : 1
-     * did : 1
-     * direction : 2
-     * amount : 3
-     * realAmount : 1
-     * status : 0
-     */
     @Id
     private long tid;
+    private String sid;
     private long uid;
     private String did;
     private int direction;
@@ -32,6 +24,14 @@ public class Ticket {
 
     public void setTid(long tid) {
         this.tid = tid;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 
     public long getUid() {
