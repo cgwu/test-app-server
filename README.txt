@@ -11,3 +11,7 @@ java -jar demo.jar --spring.config.location=/opt/config/application.properties
 notes:
 <th:block th:text="${application.static}"/>
 <link rel="stylesheet" href="/assets/css/bootstrap.css" th:href="@{${application.static}+'/assets/css/bootstrap.css'}" />
+<script th:inline="javascript">
+    var apiUrl = /*[[@{/journal}]]*/;	// api URL
+</script>
+<script th:src="${application.static + '/components/jquery/dist/jquery.js'}"></script>

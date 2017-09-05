@@ -277,19 +277,18 @@
         </div><!-- /.row -->
     </div><!-- /.main-content -->
 </div><!-- /.main-container -->
-
 <!-- basic scripts -->
 
 <!--[if !IE]> -->
-<script src="../components/jquery/dist/jquery.js"></script>
-
+<script th:src="${application.static + '/components/jquery/dist/jquery.min.js'}"></script>
 <!-- <![endif]-->
 
 <!--[if IE]>
-<script src="../components/jquery.1x/dist/jquery.js"></script>
+<script th:src="${application.static + '/components/jquery.1x/dist/jquery.min.js'}"></script>
 <![endif]-->
 <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='../components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
+    if('ontouchstart' in document.documentElement)
+        document.write("<script src='[[${application.static}]]/components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
 </script>
 
 <!-- inline scripts related to this page -->

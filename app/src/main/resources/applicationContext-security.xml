@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+    <security:http pattern="/login*" security="none"/>
+
+    <security:http auto-config="false" use-expressions="false" disable-url-rewriting="false"
+                  >
+        <security:intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
+        <security:form-login login-page="/login" default-target-url="/admin/index" />
+        <security:logout />
+
+        <security:session-management>
+            <!-- 自动踢出第一个用户，或 不允许重复登陆 error-if-maximum-exceeded="true" -->
+            <security:concurrency-control max-sessions="1" />
+        </security:session-management>
+    </security:http>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="userDetailsService" >
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!--
+     access-decision-manager-ref="accessDecisionManager"
+
+    <bean id="accessDecisionManager"
+          class="org.springframework.security.access.vote.AffirmativeBased">
+        <constructor-arg>
+            <list>
+                <ref bean="roleVoter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="roleVoter"
+          class="org.springframework.security.access.vote.RoleHierarchyVoter">
+        <constructor-arg>
+            <bean
+                    class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+                <property name="hierarchy">
+                    <value>
+                        ROLE_ADMIN > ROLE_USER
+                        ROLE_USER > ROLE_GUEST
+                    </value>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+    -->
+</beans>

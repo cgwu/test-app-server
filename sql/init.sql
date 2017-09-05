@@ -1,6 +1,19 @@
 -- 创建数据库: wyjf_dev
 create database wyjf_dev character set utf8 collate utf8_general_ci;
 
+use wyjf_dev;
+
+-- SECURITY: ADMIN ACCOUNT
+DROP TABLE IF EXISTS admin;
+CREATE TABLE admin (
+  aid SERIAL,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255 ) NOT NULL,
+  enabled BOOL DEFAULT true,
+  primary key (AID)
+) ENGINE=InnoDB;
+
+insert into admin (name, password, enabled) values ('root','123',true);
 
 drop table if exists user;
 
