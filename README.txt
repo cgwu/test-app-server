@@ -15,3 +15,5 @@ notes:
     var apiUrl = /*[[@{/journal}]]*/;	// api URL
 </script>
 <script th:src="${application.static + '/components/jquery/dist/jquery.js'}"></script>
+
+https://spring.io/guides/topicals/spring-security-architecture/

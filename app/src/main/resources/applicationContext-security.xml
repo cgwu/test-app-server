@@ -8,8 +8,8 @@
     <security:http pattern="/login*" security="none"/>
 
     <security:http auto-config="false" use-expressions="false" disable-url-rewriting="false"
-                  >
-        <security:intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
+                   access-decision-manager-ref="accessDecisionManager" >
+        <security:intercept-url pattern="/admin/index" access="ROLE_ADMIN"/>
         <security:form-login login-page="/login" default-target-url="/admin/index" />
         <security:logout />
 
@@ -23,9 +23,6 @@
         <security:authentication-provider user-service-ref="userDetailsService" >
         </security:authentication-provider>
     </security:authentication-manager>
-
-    <!--
-     access-decision-manager-ref="accessDecisionManager"
 
     <bean id="accessDecisionManager"
           class="org.springframework.security.access.vote.AffirmativeBased">
@@ -50,5 +47,4 @@
             </bean>
         </constructor-arg>
     </bean>
-    -->
 </beans>

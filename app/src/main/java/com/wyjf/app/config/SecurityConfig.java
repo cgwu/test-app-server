@@ -1,10 +1,14 @@
 package com.wyjf.app.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -15,8 +19,9 @@ import java.sql.ResultSet;
 
 @Configuration
 @EnableGlobalAuthentication
-@ImportResource({"classpath:applicationContext-security.xml"})
+//@ImportResource({"classpath:applicationContext-security.xml"})
 public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
     public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
@@ -30,11 +35,14 @@ public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter {
                         rs.getBoolean("enabled"),
                         AuthorityUtils.createAuthorityList("ROLE_ADMIN")
                 );
-        return username -> jdbcTemplate.queryForObject(
-                "SELECT * from admin where name = ?", userRowMapper, username);
+        return (username) ->
+        {
+            User user = jdbcTemplate.queryForObject("SELECT * from admin where name = ?", userRowMapper, username);
+            log.info("登陆用户名:{},{}", username, user);
+            return user;
+        };
     }
 
-	/*
     @Autowired
 	private UserDetailsService userDetailsService;
 
@@ -42,6 +50,6 @@ public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter {
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(this.userDetailsService);
 	}
-	*/
+
 }
 
