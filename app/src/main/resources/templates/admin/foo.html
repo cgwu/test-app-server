@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>首页</title>
 </head>
 <body>
-<h1>普通用户访问, foo</h1>
+
+<ul class="breadcrumb" layout:fragment="breadcrumb">
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="#">主页</a>
+    </li>
+    <li class="active">FOO</li>
+</ul>
+
+<div layout:fragment="content" style='border:solid 1px red;'>
+
+    <h1>FOO</h1>
+
+</div>
+
 </body>
 </html>
