@@ -1,6 +1,6 @@
 package com.wyjf.app.api;
 
-import com.wyjf.app.util.CommonUtil;
+import com.wyjf.common.util.CommonUtil;
 import com.wyjf.common.domain.LogVerifycode;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.LogVerifyCodeRepo;
@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
 
 /**
  * Created by zhuxulei on 2017/8/24 0024.
@@ -35,12 +34,16 @@ public class UserController {
             @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "String")
     })
     public ApiResult reg(@RequestParam String phone, @RequestParam String pwd, @RequestParam String code) {
-        LogVerifycode logVerifycode = null;// TODO: verfyCodeRepo.findByPhoneExist(phone);
+        LogVerifycode logVerifycode = verfyCodeRepo.findByPhoneExist(phone);
         if(logVerifycode != null && code.equals(logVerifycode.getVerifycode())){
             User user = new User();
-            user.setNickname(phone);
-            user.setPasswordLogin(pwd);
+            user.setPhone(phone);
+            user.setNickname("U"+phone);
+            user.setPasswordLogin(CommonUtil.generatePwd(pwd));
+            user.setBalance(0.0);
             user = userRepo.save(user);
+            logVerifycode.setStatus(1);
+            verfyCodeRepo.save(logVerifycode);
             if(user != null){
                 return ApiFactory.createResult(0, "success", user);
             }else{
@@ -56,13 +59,10 @@ public class UserController {
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "phone", value = "手机号码", required = true, paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "pwd", value = "密码", required = false, paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "code", value = "验证码", required = false, paramType = "query", dataType = "String")
+            @ApiImplicitParam(name = "pwd", value = "密码", required = false, paramType = "query", dataType = "String")
     })
-    public ApiResult login(@RequestParam String phone, @RequestParam String pwd, @RequestParam String code) {
-        User puser = new User();
-        puser.setPasswordLogin(pwd);
-        List<User> user = userRepo.findByPhoneOrPwd(phone,pwd);
+    public ApiResult login(@RequestParam String phone, @RequestParam String pwd) {
+        User user = userRepo.findByPhoneOrPwd(phone,CommonUtil.generatePwd(pwd));
         if(user != null){
             return ApiFactory.createResult(0, "success", user);
         }else{
@@ -77,7 +77,7 @@ public class UserController {
     @RequestMapping(value = {"/verifyCode"}, method = RequestMethod.POST)
     public ApiResult verifyCode(@RequestParam String phone){
         //获取该电话号码10分钟之内是否存在有效的验证码
-        LogVerifycode oldLogVerifycode = null;//TODO: verfyCodeRepo.findByPhoneExist(phone);
+        LogVerifycode oldLogVerifycode = verfyCodeRepo.findByPhoneExist(phone);
         if(oldLogVerifycode != null && oldLogVerifycode.getId() != null){
             return ApiFactory.createResult(0, "success", oldLogVerifycode);
         }
@@ -99,10 +99,91 @@ public class UserController {
     @RequestMapping(value = {"/getUserInfo"}, method = RequestMethod.POST)
     public ApiResult getUserInfo(@RequestParam Integer userId){
         User user = userRepo.findOne(new Long(userId));
-        user.setUid(new Long(userId));
-        user.setNickname("hello");
-        return ApiFactory.createResult(user);
+        if(user.getUid() != null){
+            return ApiFactory.createResult(0, "success", user);
+        }else{
+            return ApiFactory.createResult(-1, "fail", null);
+        }
     }
+
+
+    @ApiOperation(value = "更新手机号码", notes = "使用用户ID更新手机号码接口", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Integer"),
+            @ApiImplicitParam(name = "oldPhone", value = "旧手机号码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "newPhone", value = "新手机号码", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/updatePhone"}, method = RequestMethod.POST)
+    public ApiResult updatePhone(@RequestParam Integer userId, @RequestParam String oldPhone, @RequestParam String newPhone){
+        User user = userRepo.findOne(new Long(userId));
+        if(user != null) {
+            if (user.getPhone().equals(oldPhone)) {
+                user.setPhone(newPhone);
+                userRepo.save(user);
+                return ApiFactory.createResult(0, "修改成功", user);
+            } else {
+                return ApiFactory.createResult(-1, "旧手机号码不匹配", null);
+            }
+        } else {
+            return ApiFactory.createResult(-1, "用户不存在", null);
+        }
+    }
+
+    @ApiOperation(value = "更新用户信息", notes = "使用用户ID更新用户信息接口(头像，昵称，性别)", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Integer"),
+            @ApiImplicitParam(name = "img", value = "新头像", required = false, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "nickname", value = "新昵称", required = false, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "gender", value = "新性别", required = false, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/updateUserInfo"}, method = RequestMethod.POST)
+    public ApiResult updateUserInfo(@RequestParam Integer userId, @RequestParam String img, @RequestParam String nickname, @RequestParam String gender){
+        User user = userRepo.findOne(new Long(userId));
+        if(user != null) {
+            if(!CommonUtil.checkEmpty(img)) {
+
+            }
+            if(!CommonUtil.checkEmpty(nickname)) {
+                user.setNickname(nickname);
+            }
+            if(!CommonUtil.checkEmpty(gender)) {
+                user.setGender(gender);
+            }
+            userRepo.save(user);
+            return ApiFactory.createResult(0, "修改成功", user);
+        } else {
+            return ApiFactory.createResult(-1, "用户不存在", null);
+        }
+    }
+
+
+    @ApiOperation(value = "设置提现密码", notes = "用户设置接口", produces = "application/json")
+    @RequestMapping(value = {"/updatePwdTrade"}, method = RequestMethod.POST)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Integer"),
+            @ApiImplicitParam(name = "phone", value = "手机号码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "pwd", value = "提现密码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "String")
+    })
+    public ApiResult updatePwdTrade(@RequestParam Integer userId, @RequestParam String phone, @RequestParam String pwd, @RequestParam String code) {
+        LogVerifycode logVerifycode = verfyCodeRepo.findByPhoneExist(phone);
+        if(logVerifycode != null && code.equals(logVerifycode.getVerifycode())){
+            User user = userRepo.findOne(new Long(userId));
+            user.setPasswordTrade(CommonUtil.generatePwd(pwd));
+            user = userRepo.save(user);
+            logVerifycode.setStatus(1);
+            verfyCodeRepo.save(logVerifycode);
+            if(user != null){
+                return ApiFactory.createResult(0, "修改成功", user);
+            }else{
+                return ApiFactory.createResult(-1, "修改失败", null);
+            }
+        }else{
+            return ApiFactory.createResult(-1, "无效验证码", null);
+        }
+
+    }
+
 
 
 }

@@ -15,6 +15,6 @@ public interface LogVerifyCodeRepo extends JpaRepository<LogVerifycode, Long> {
      * @param phone
      * @return
      */
-//    @Query(value = "SELECT t FROM LogVerifyCode t WHERE t.phone = :phone AND t.status = '0' AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(t.createTime))/60 <= 10")
-//    public LogVerifycode findByPhoneExist(@Param("phone") String phone);
+    @Query(value = "SELECT t FROM LogVerifycode t WHERE t.phone = :phone AND t.status = '0' AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(t.createTime))/60 <= 10")
+    public LogVerifycode findByPhoneExist(@Param("phone") String phone);
 }

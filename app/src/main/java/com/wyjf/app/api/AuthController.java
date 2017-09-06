@@ -36,8 +36,8 @@ public class AuthController {
     })
     public List<String> login(@PathVariable String name) {
         log.info("hello,{}", name);
-//        User user = userRepo.findOne(2L);
-        User user = userRepo.findByNickname(name);
+        User user = userRepo.findOne(2L);
+//        User user = userRepo.findByNickname(name);
         if (user != null) log.info(user.toString());
         return Arrays.asList(String.format("Hello %s, OK!", name));
     }

@@ -3,6 +3,7 @@ package com.wyjf.app.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -33,12 +34,19 @@ public class AppUserDetailsService implements UserDetailsService {
                         rs.getBoolean("enabled"),
                         rs.getBoolean("enabled"),
                         rs.getBoolean("enabled"),
-//                        AuthorityUtils.createAuthorityList("ROLE_ADMIN")
-                        "root".equals(rs.getString("name")) ?
-                                AuthorityUtils.createAuthorityList("ROLE_ADMIN") :
-                                AuthorityUtils.createAuthorityList("ROLE_USER")
+                        AuthorityUtils.createAuthorityList("ROLE_ADMIN")
+//                        "root".equals(rs.getString("name")) ?
+//                                AuthorityUtils.createAuthorityList("ROLE_ADMIN") :
+//                                AuthorityUtils.createAuthorityList("ROLE_USER")
                 );
-        User user = jdbcTemplate.queryForObject("SELECT * from admin where name = ?", userRowMapper, username);
+        User user = null;
+        try {
+            user = jdbcTemplate.queryForObject("SELECT * from admin where name = ?", userRowMapper, username);
+        } catch (DataAccessException e) { }
+
+        if (user == null) {
+            throw new UsernameNotFoundException("username not found");
+        }
         log.info("登陆用户名:{},{}", username, user);
         return user;
 

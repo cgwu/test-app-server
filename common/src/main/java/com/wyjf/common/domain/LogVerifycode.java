@@ -17,6 +17,7 @@ public class LogVerifycode {
     private Date createTime;
     private int status;
 
+    public LogVerifycode(){}
     public LogVerifycode(String phone, String verfycode) {
         this.setPhone(phone);
         this.setVerifycode(verfycode);
