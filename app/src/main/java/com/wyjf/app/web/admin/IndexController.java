@@ -15,4 +15,9 @@ public class IndexController {
         return "admin/index";
     }
 
+
+    @RequestMapping("/foo")
+    public String foo() {
+        return "admin/foo";
+    }
 }
