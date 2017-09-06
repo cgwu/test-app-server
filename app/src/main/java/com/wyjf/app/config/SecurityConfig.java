@@ -1,5 +1,6 @@
 package com.wyjf.app.config;
 
+import com.wyjf.app.service.AppUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -18,39 +23,37 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.sql.ResultSet;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
-    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
-        RowMapper<User> userRowMapper = (ResultSet rs, int i) ->
-                new User(
-                        rs.getString("name"),
-                        rs.getString("password"),
-                        rs.getBoolean("enabled"),
-                        rs.getBoolean("enabled"),
-                        rs.getBoolean("enabled"),
-                        rs.getBoolean("enabled"),
-//                        AuthorityUtils.createAuthorityList("ROLE_ADMIN")
-                        "root".equals(rs.getString("name")) ?
-                                AuthorityUtils.createAuthorityList("ROLE_ADMIN") :
-                                AuthorityUtils.createAuthorityList("ROLE_USER")
-                );
-        return (username) ->
-        {
-            User user = jdbcTemplate.queryForObject("SELECT * from admin where name = ?", userRowMapper, username);
-            log.info("登陆用户名:{},{}", username, user);
-            return user;
-        };
+    public UserDetailsService userDetailsService() {
+        return new AppUserDetailsService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+//        return new Md5PasswordEncoder();
+        return new ShaPasswordEncoder(256);
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
+                .antMatchers("/api/**");    //TODO: api暂时不验证权限
                 // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**");
+//                .antMatchers("/resources/**");
     }
 
     @Override
@@ -71,13 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         try {
-            auth.userDetailsService(userDetailsService);
+//            auth.userDetailsService(userDetailsService);
+            auth.authenticationProvider(authenticationProvider());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Autowired
-	private UserDetailsService userDetailsService;
+//    @Autowired
+//	private UserDetailsService userDetailsService;
 }
 
