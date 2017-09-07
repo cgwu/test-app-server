@@ -26,4 +26,8 @@ public class SystemParamService {
         }
     }
 
+    public int add(int a, int b){
+        return a+b;
+    }
+
 }

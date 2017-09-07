@@ -1,5 +1,6 @@
 package com.wyjf.app.web.admin;
 
+import com.wyjf.app.service.SystemParamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

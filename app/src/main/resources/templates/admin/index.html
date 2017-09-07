@@ -21,7 +21,8 @@
 
 <div layout:fragment="content" style='border:solid 1px red;'>
 
-    <h1>admin index</h1>
+    <h1>admin index,调用Spring Bean测试: <span th:text="${@systemParamService.add(100,22)}"></span> </h1>
+
 <div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
     Logged in user: <span sec:authentication="name"></span> |
     Roles: <span sec:authentication="principal.authorities"></span>
