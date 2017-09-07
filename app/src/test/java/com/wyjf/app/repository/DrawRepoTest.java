@@ -37,7 +37,7 @@ public class DrawRepoTest {
         draw.setAmountDown(200);
         draw.setStatus(0);
         repo.save(draw);
-        log.info("保存draw成功!");
+        log.info("保存成功!");
     }
 
 }

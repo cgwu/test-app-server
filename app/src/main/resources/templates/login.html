@@ -66,7 +66,7 @@
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" name="username" class="form-control" placeholder="用户名" />
+															<input type="text" id="username" name="username" class="form-control" placeholder="用户名" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                                             </label>
@@ -294,6 +294,7 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     jQuery(function($) {
+        $("#username").focus();
         $(document).on('click', '.toolbar a[data-target]', function(e) {
             e.preventDefault();
             var target = $(this).data('target');

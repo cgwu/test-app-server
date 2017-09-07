@@ -58,17 +58,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/admin/index").hasRole("ADMIN")
                 .antMatchers("/admin/foo").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 //                .antMatchers("/admin/foo").hasRole("USER")
 //                .anyRequest().hasRole("USER")
                 .and()
-                // Possibly more configuration ...
-                .formLogin().loginPage("/login").defaultSuccessUrl("/admin/index")//.successForwardUrl("/admin/index") // enable form based log in
-                // set permitAll for all URLs associated with Form Login
-                .permitAll();
+                .formLogin().loginPage("/login").defaultSuccessUrl("/admin/index")
+                .permitAll()    // set permitAll for all URLs associated with Form Login
+                .and()
+                // sample logout customization
+                .logout().deleteCookies("sid").invalidateHttpSession(true)
+                .logoutUrl("/secure-logout").logoutSuccessUrl("/login");
     }
 
     @Override
@@ -81,7 +85,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-//    @Autowired
-//	private UserDetailsService userDetailsService;
 }
 
