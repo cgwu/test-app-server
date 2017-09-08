@@ -13,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 /**
@@ -26,18 +30,25 @@ public class DrawRepoTest {
     @Autowired
     private DrawRepo repo;
 
-
     @Test
     public void testSave() {
         Draw draw = new Draw();
-        draw.setDid("201709015");
-        draw.setStartDate(new Timestamp(new Date().getTime()));
-        draw.setEndDate(new Timestamp(new Date().getTime() + 1000 * 6));
+        draw.setDrawDay(LocalDate.now());
+        draw.setDrawSeq(1);
+        draw.setStartDate(LocalDateTime.now().minusHours(5));
+        draw.setEndDate(LocalDateTime.now());
+//        draw.setEndDate(Instant.now().minusSeconds(60*5));
         draw.setAmountUp(100);
         draw.setAmountDown(200);
         draw.setStatus(0);
         repo.save(draw);
         log.info("保存成功!");
+    }
+
+    @Test
+    public void testGet(){
+        Draw d =  repo.findOne(1L);
+        log.info(d.toString());
     }
 
 }

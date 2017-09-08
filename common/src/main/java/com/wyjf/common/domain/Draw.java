@@ -2,53 +2,28 @@ package com.wyjf.common.domain;
 
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Created by Administrator on 2017/9/1.
  */
 @Entity
 public class Draw {
-    /**
-     * did : 201709011
-     * startDate : 2017-09-01 16:45:51
-     * endDate : 2017-09-01 16:45:53
-     * amountUp : 0
-     * amountDown : 0
-     * status : 0
-     */
     @Id
-    private String did;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long did;
+    private LocalDate drawDay;
+    private int drawSeq;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private int amountUp;
     private int amountDown;
     private int status;
-
-    public String getDid() {
-        return did;
-    }
-
-    public void setDid(String did) {
-        this.did = did;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-    }
 
     public int getAmountUp() {
         return amountUp;
@@ -72,5 +47,59 @@ public class Draw {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Long getDid() {
+        return did;
+    }
+
+    public void setDid(Long did) {
+        this.did = did;
+    }
+
+    public LocalDate getDrawDay() {
+        return drawDay;
+    }
+
+    public void setDrawDay(LocalDate drawDay) {
+        this.drawDay = drawDay;
+    }
+
+    public int getDrawSeq() {
+        return drawSeq;
+    }
+
+    public void setDrawSeq(int drawSeq) {
+        this.drawSeq = drawSeq;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Draw{" +
+                "did=" + did +
+                ", drawDay=" + drawDay +
+                ", drawSeq=" + drawSeq +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", amountUp=" + amountUp +
+                ", amountDown=" + amountDown +
+                ", status=" + status +
+                '}';
     }
 }

@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -24,6 +24,23 @@ public class TestDateTime {
 
     //线程安全
     private static final DateTimeFormatter format2 = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
+
+    @Test
+    public void testDate(){
+        LocalDate ld = LocalDate.now();
+        log.info(ld.toString());
+        LocalTime lt = LocalTime.now();
+        log.info(lt.toString());
+        LocalDateTime ldt = LocalDateTime.now();
+        log.info(ldt.toString());
+        ZonedDateTime zdt = ZonedDateTime.now();
+        log.info(zdt.toString());
+
+        Instant timestamp = Instant.now();
+        log.info(timestamp.toString());
+    }
+
+
 
     @Test
     public void TestDateTimeFormat() {
