@@ -1,5 +1,6 @@
 package com.wyjf.app.repository;
 
+import com.alibaba.fastjson.JSON;
 import com.wyjf.common.domain.Draw;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.DrawRepo;
@@ -49,6 +50,7 @@ public class DrawRepoTest {
     public void testGet(){
         Draw d =  repo.findOne(1L);
         log.info(d.toString());
+        log.info(JSON.toJSONString(d));
     }
 
 }

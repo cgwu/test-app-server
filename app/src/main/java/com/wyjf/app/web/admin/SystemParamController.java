@@ -1,5 +1,6 @@
 package com.wyjf.app.web.admin;
 
+import com.alibaba.fastjson.JSON;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.UserRepo;
 import org.slf4j.Logger;
@@ -8,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +40,9 @@ public class SystemParamController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public Map<Object, Object> listPost() {
+    public Map<Object, Object> listPost(String order_id,Model order) {
+        log.info("参数单号值：{},map:{}",order_id, JSON.toJSONString(order));
+
         List<User> users = userRepo.findAll();
         HashMap map = new HashMap();
         map.put("data", users);
