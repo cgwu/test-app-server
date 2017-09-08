@@ -1,9 +1,7 @@
 package com.wyjf.app.web.admin;
 
-import com.wyjf.app.service.SystemParamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -11,14 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by Administrator on 2017/9/5.
+ * 盘口
  */
 @Controller
-@RequestMapping("/admin")
-public class IndexController {
-    private static final Logger log = LoggerFactory.getLogger(IndexController.class);
+@RequestMapping("/admin/draw")
+public class DrawController {
+    private static final Logger log = LoggerFactory.getLogger(DrawController.class);
 
-    @RequestMapping("/index")
-    public String index() {
+    @RequestMapping("/list")
+    public String list() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = null;
         if (principal instanceof UserDetails) {
@@ -29,8 +28,7 @@ public class IndexController {
         }
         log.info("当前登陆用户:{}", username);
 
-        return "admin/index";
-//        return "layout/base";
+        return "admin/draw/list";
     }
 
 

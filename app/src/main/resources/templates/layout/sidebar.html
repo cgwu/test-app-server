@@ -1,9 +1,8 @@
 <!-- #section:basics/sidebar -->
 <div id="sidebar" class="sidebar                  responsive                    ace-save-state">
     <script type="text/javascript">
-        try{ace.settings.loadState('sidebar')}catch(e){}
+            try{ace.settings.loadState('sidebar')}catch(e){}
     </script>
-
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
         <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
             <button class="btn btn-success">
@@ -36,10 +35,9 @@
             <span class="btn btn-danger"></span>
         </div>
     </div><!-- /.sidebar-shortcuts -->
-
     <ul class="nav nav-list">
         <li class="">
-            <a href="index.html">
+            <a>
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> 菜单 </span>
             </a>
@@ -56,7 +54,14 @@
             <b class="arrow"></b>
             <ul class="submenu">
                 <li class="">
-                    <a href="tables.html">
+                    <a th:href="@{/admin/draw/list}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        盘口管理
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a th:href="@{/admin/systemparam/list}">
                         <i class="menu-icon fa fa-caret-right"></i>
                         系统参数
                     </a>

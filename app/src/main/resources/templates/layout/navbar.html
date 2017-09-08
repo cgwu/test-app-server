@@ -32,6 +32,8 @@
         <!-- #section:basics/navbar.dropdown -->
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
             <ul class="nav ace-nav">
+
+                <!--/*
                 <li class="grey dropdown-modal">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="ace-icon fa fa-tasks"></i>
@@ -108,6 +110,7 @@
                         </li>
                     </ul>
                 </li>
+                */-->
 
                 <li class="purple dropdown-modal">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -177,6 +180,7 @@
                     </ul>
                 </li>
 
+                <!--/*
                 <li class="green dropdown-modal">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
@@ -286,11 +290,12 @@
                         </li>
                     </ul>
                 </li>
+                */-->
 
                 <!-- #section:basics/navbar.user_menu -->
                 <li class="light-blue dropdown-modal">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+                        <img class="nav-user-photo" th:src="${application.static+'/assets/avatars/user.jpg'}" alt="Jason's Photo" />
 								<span class="user-info" sec:authorize="isAuthenticated()">
 									<small>欢迎您,</small>
 									<span sec:authentication="name"></span>

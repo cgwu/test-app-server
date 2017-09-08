@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>盘口管理</title>
+</head>
+<body>
+<ul class="breadcrumb" layout:fragment="breadcrumb">
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a th:href="@{/admin/index}">主页</a>
+    </li>
+    <li class="active">盘口管理</li>
+</ul>
+
+<div layout:fragment="content" style='border:solid 1px red;'>
+
+</div>
+</body>
+</html>

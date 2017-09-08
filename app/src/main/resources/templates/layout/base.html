@@ -32,6 +32,7 @@
     <![endif]-->
 
     <!-- inline styles related to this page -->
+    <th:block layout:fragment="inlinestyle"></th:block>
 
     <!-- ace settings handler -->
     <script th:src="${application.static + '/assets/js/ace-extra.js'}"></script>
@@ -112,20 +113,26 @@
 
 <!--[if !IE]> -->
 <script th:src="${application.static + '/components/jquery/dist/jquery.js'}"></script>
-
 <!-- <![endif]-->
 
 <!--[if IE]>
 <script th:src="${application.static + '/components/jquery.1x/dist/jquery.js'}"></script>
 <![endif]-->
 <script type="text/javascript">
-    if('ontouchstart' in document.documentElement)
-        document.write("<script src='[[${application.static}]]/components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
+    if('ontouchstart' in document.documentElement) {
+        document.write("<script src='[[${application.static}]]/components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>" + "<" + "/script>");
+    }
+    $(function(){
+        // restore sidebar menu state
+        var pathname = window.location.pathname;
+        $("#sidebar li a[href='"+pathname+"']").each(function() {
+            $(this).parent("li").addClass("active").parents("li").addClass("active open");;
+        });
+    });
 </script>
 <script th:src="${application.static + '/components/bootstrap/dist/js/bootstrap.js'}"></script>
-
 <!-- page specific plugin scripts -->
-
+<th:block layout:fragment="pagescript"></th:block>
 <!-- ace scripts -->
 <script th:src="${application.static + '/assets/js/src/elements.scroller.js'}"></script>
 <script th:src="${application.static + '/assets/js/src/elements.colorpicker.js'}"></script>
@@ -151,21 +158,7 @@
 <script th:src="${application.static + '/assets/js/src/ace.widget-on-reload.js'}"></script>
 <script th:src="${application.static + '/assets/js/src/ace.searchbox-autocomplete.js'}"></script>
 
-<!-- inline scripts related to this page -->
-
-<!-- the following scripts are used in demo only for onpage help and you don't need them -->
-<!--
-<link rel="stylesheet" th:href="${application.static + '/assets/css/ace.onpage-help.css'}" />
-<link rel="stylesheet" th:href="${application.static + '/docs/assets/js/themes/sunburst.css'}" />
-
-<script type="text/javascript"> ace.vars['base'] = '..'; </script>
-<script th:src="${application.static + '/assets/js/src/elements.onpage-help.js'}"></script>
-<script th:src="${application.static + '/assets/js/src/ace.onpage-help.js'}"></script>
-<script th:src="${application.static + '/docs/assets/js/rainbow.js'}"></script>
-<script th:src="${application.static + '/docs/assets/js/language/generic.js'}"></script>
-<script th:src="${application.static + '/docs/assets/js/language/html.js'}"></script>
-<script th:src="${application.static + '/docs/assets/js/language/css.js'}"></script>
-<script th:src="${application.static + '/docs/assets/js/language/javascript.js'}"></script>
--->
+<!-- inline scriptsrelated to this page -->
+<th:block layout:fragment="inlinescript"></th:block>
 </body>
 </html>

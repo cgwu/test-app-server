@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>系统参数</title>
+</head>
+<body>
+<th:block layout:fragment="inlinestyle">
+    <style>
+        .dataTables_paginate {
+            text-align: left;
+        }
+    </style>
+</th:block>
+
+<ul class="breadcrumb" layout:fragment="breadcrumb">
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a th:href="@{/admin/index}">主页</a>
+    </li>
+    <li class="active">系统参数</li>
+</ul>
+
+<div layout:fragment="content">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="header smaller lighter blue">系统参数</h3>
+
+            <div class="clearfix">
+                <div class="pull-right tableTools-container"></div>
+            </div>
+            <div class="table-header">
+                Results for "系统参数"
+            </div>
+
+            <table id="tbData" class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr role="row" class="heading">
+                        <th class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th>Domain</th>
+                        <th>Price</th>
+                        <th class="hidden-480">Clicks</th>
+                        <th>
+                            <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
+                            Update
+                        </th>
+                        <th class="hidden-480">Status</th>
+                        <th></th>
+                    </tr>
+
+                    <tr role="row" class="filter">
+                        <td> </td>
+                        <td>
+                            <input type="text" class="form-control form-filter input-sm" name="order_id"> </td>
+                        <td>
+                            <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-sm default" type="button">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </button>
+                                                                </span>
+                            </div>
+                            <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-sm default" type="button">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </button>
+                                                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-filter input-sm" name="order_customer_name"> </td>
+                        <td>
+                            <input type="text" class="form-control form-filter input-sm" name="order_ship_to"> </td>
+                        <td>
+                            <div class="margin-bottom-5">
+                                <input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From" /> </div>
+                            <input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To" /> </td>
+                        <td>
+                            <div class="margin-bottom-5">
+                                <input type="text" class="form-control form-filter input-sm margin-bottom-5 clearfix" name="order_quantity_from" placeholder="From" /> </div>
+                            <input type="text" class="form-control form-filter input-sm" name="order_quantity_to" placeholder="To" /> </td>
+                        <td>
+                            <select name="order_status" class="form-control form-filter input-sm">
+                                <option value="">Select...</option>
+                                <option value="pending">Pending</option>
+                                <option value="closed">Closed</option>
+                                <option value="hold">On Hold</option>
+                                <option value="fraud">Fraud</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="margin-bottom-5">
+                                <button class="btn btn-sm green btn-outline filter-submit margin-bottom">
+                                    <i class="fa fa-search"></i> Search</button>
+                            </div>
+                            <button class="btn btn-sm red btn-outline filter-cancel">
+                                <i class="fa fa-times"></i> Reset</button>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="pagescript">
+    <script type="text/javascript" th:src="${application.static + '/components/datatables-latest/js/jquery.dataTables.min.js'}"></script>
+    <script type="text/javascript" th:src="${application.static + '/components/datatables-latest/js/dataTables.bootstrap.min.js'}"></script>
+    <!--/*
+    <script th:src="${application.static + '/components/datatables/media/js/jquery.dataTables.js'}"></script>
+    <script th:src="${application.static + '/components/_mod/datatables/jquery.dataTables.bootstrap.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-buttons/js/dataTables.buttons.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-buttons/js/buttons.flash.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-buttons/js/buttons.html5.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-buttons/js/buttons.print.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-buttons/js/buttons.colVis.js'}"></script>
+    <script th:src="${application.static + '/components/datatables.net-select/js/dataTables.select.js'}"></script>
+    */-->
+    <script th:src="@{/js/util/datatable.js}"></script>
+</th:block>
+
+<th:block layout:fragment="inlinescript">
+<script>
+    var handleDemo2 = function () {
+        var grid = new Datatable();
+        grid.init({
+            src: $("#tbData"),
+            onSuccess: function (grid, response) {
+                // grid:        grid object
+                // response:    json object of server side ajax response
+                // execute some code after table records loaded
+            },
+            onError: function (grid) {
+                // execute some code on network or other general error
+            },
+            onDataLoad: function(grid) {
+                // execute some code on ajax data load
+            },
+
+            dataTable: {
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+                // So when dropdowns used the scrollable div should be removed.
+//                "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+
+//                "dom": "<'row'<'col-md-8 col-sm-12'i><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'p><'col-md-4 col-sm-12'>>",
+
+                columns: [ {data:'uid'}, { data: 'phone' }, {data: 'nickname'},{data:'gender'}, {data:'balance'}],
+
+                "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+
+                "pageLength": 10, // default record count per page
+
+                "ajax": {
+//                    "url": "./list", // ajax source: default current url
+                },
+                "order": [
+                    [1, "asc"]
+                ],// set first column as a default sort by asc,
+
+                "language": {
+                    "loadingRecords": "Please wait ...",
+                    "zeroRecords": "No records",
+                    "emptyTable": "No data available in table",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                },
+
+                deferRender:    true,
+                scroller: {
+                    loadingIndicator: true
+                }
+            }
+        });
+
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+               /* App.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });*/
+            } else if (grid.getSelectedRowsCount() === 0) {
+               /* App.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });*/
+            }
+        });
+
+        //grid.setAjaxParam("customActionType", "group_action");
+        //grid.getDataTable().ajax.reload();
+        //grid.clearAjaxParams();
+    }
+
+    $(function() {
+        handleDemo2();
+    });
+</script>
+</th:block>
+</body>
+</html>
