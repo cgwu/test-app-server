@@ -1,21 +1,18 @@
 package com.wyjf.app.web.admin;
 
-import com.alibaba.fastjson.JSON;
 import com.wyjf.common.domain.User;
+import com.wyjf.common.message.AjaxPageRequest;
 import com.wyjf.common.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,20 +30,26 @@ public class SystemParamController {
     private UserRepo userRepo;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String listGet() {
+    public String list() {
         return "admin/systemparam/list";
     }
 
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public Map<Object, Object> listPost(String order_id,Model order) {
-        log.info("参数单号值：{},map:{}",order_id, JSON.toJSONString(order));
+//    public Map<Object, Object> listQuery(@RequestParam int start, @RequestParam int length,@RequestParam int draw) {
+    public Map<Object, Object> listQuery(@ModelAttribute AjaxPageRequest req) {
+        log.info("request: {}",req);
+//        log.info("参数单号值：{},map:{}",order_id, JSON.toJSONString(order));
+
+        User u = new User();
+        u.setUid(3L);
+        Example<User> example = Example.of(u);
 
         List<User> users = userRepo.findAll();
         HashMap map = new HashMap();
         map.put("data", users);
-        map.put("draw", 1);
+        map.put("draw", req.getDraw());
         map.put("recordsTotal", users.size());
         map.put("recordsFiltered", users.size());
         return map;

@@ -42,16 +42,16 @@ var Datatable = function() {
                 loadingMessage: 'Loading...',
                 dataTable: {
                     //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r><'table-responsive't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
-                    "dom": "<'row'<'col-md-8 col-sm-12'i><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'p><'col-md-4 col-sm-12'>>",
+                    "dom": "<'row'<'col-md-8 col-sm-12'l><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-6 col-sm-12'i><'col-md-6 col-sm-12'p>>",
                     "pageLength": 10, // default records per page
                     "language": { // language settings
                         // metronic spesific
-                        "metronicGroupActions": "_TOTAL_ records selected:  ",
+                        "metronicGroupActions": "_TOTAL_ 条被选中:  ",
                         "metronicAjaxRequestGeneralError": "Could not complete request. Please check your internet connection",
 
                         // data tables spesific
-                        "lengthMenu": "<span class='seperator'>|</span>View _MENU_ records",
-                        "info": "<span class='seperator'>|</span>Found total _TOTAL_ records",
+                        "lengthMenu": "查看 _MENU_ 条记录每页",
+                        "sInfo": "找到 _TOTAL_ 条记录",
                         "infoEmpty": "No records found to show",
                         "emptyTable": "No data available in table",
                         "zeroRecords": "No matching records found",
@@ -64,7 +64,6 @@ var Datatable = function() {
                             "pageOf": "/"
                         }
                     },
-
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,

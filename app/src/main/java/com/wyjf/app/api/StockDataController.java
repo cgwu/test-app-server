@@ -36,21 +36,15 @@ public class StockDataController {
 
     @ApiOperation(value = "时K", notes = "时K线数据接口", produces = "application/json")
     @RequestMapping(value = {"/hk"}, method = RequestMethod.POST)
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
-    )
-    public ApiResult stockdatahk(@RequestParam String date){
-        List list = stockDataRepo.findSockDataHour(date);
+    public ApiResult stockdatahk(){
+        List list = stockDataRepo.findSockDataHour();
         return ApiFactory.createResult(list);
     }
 
     @ApiOperation(value = "日K", notes = "日K线数据接口", produces = "application/json")
     @RequestMapping(value = {"/dk"}, method = RequestMethod.POST)
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
-    )
-    public ApiResult stockdatadk(@RequestParam String date){
-        List list = stockDataRepo.findSockDataDay(date);
+    public ApiResult stockdatadk(){
+        List list = stockDataRepo.findSockDataDay();
         return ApiFactory.createResult(list);
     }
 
@@ -66,20 +60,14 @@ public class StockDataController {
     }
     @ApiOperation(value = "获取参数传进来那天最新1小时的k数据", notes = "获取参数传进来那天最新1小时的k数据接口", produces = "application/json")
     @RequestMapping(value = {"/h"}, method = RequestMethod.POST)
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
-    )
-    public ApiResult stockdatah(@RequestParam String date){
-        List list = stockDataRepo.findSockDataHour(date);
+    public ApiResult stockdatah(){
+        List list = stockDataRepo.findSockDataHour();
         return ApiFactory.createResult(list.get(0));
     }
     @ApiOperation(value = "获取参数传进来那天最新1天的k数据", notes = "获取参数传进来那天最新1小时的k数据接口", produces = "application/json")
     @RequestMapping(value = {"/d"}, method = RequestMethod.POST)
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
-    )
-    public ApiResult stockdatad(@RequestParam String date){
-        List list = stockDataRepo.findSockDataDay(date);
+    public ApiResult stockdatad(){
+        List list = stockDataRepo.findSockDataDay();
         return ApiFactory.createResult(list.get(0));
     }
 }

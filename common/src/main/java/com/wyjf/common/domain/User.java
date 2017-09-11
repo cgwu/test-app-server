@@ -74,4 +74,17 @@ public class User {
     public void setPasswordTrade(String passwordTrade) {
         this.passwordTrade = passwordTrade;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", phone='" + phone + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", balance=" + balance +
+                ", gender='" + gender + '\'' +
+                ", passwordLogin='" + passwordLogin + '\'' +
+                ", passwordTrade='" + passwordTrade + '\'' +
+                '}';
+    }
 }

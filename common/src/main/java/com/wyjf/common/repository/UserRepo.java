@@ -2,13 +2,15 @@ package com.wyjf.common.repository;
 
 import com.wyjf.common.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 /**
  * Created by Administrator on 2017/8/22.
  */
-public interface UserRepo extends JpaRepository<User, Long> {
+public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>,QueryDslPredicateExecutor<User> {
 
     public User findByNickname(String name);
 
