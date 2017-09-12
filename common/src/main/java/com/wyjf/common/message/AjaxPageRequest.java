@@ -1,11 +1,21 @@
 package com.wyjf.common.message;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Administrator on 2017/9/11.
  */
 public class AjaxPageRequest {
     int start;
     int length;
+
+//    List<Map<String,Object>> columns;
+//    List<Map<String,Object>> order;
+
+    /**
+     * 前台请求序号
+     */
     int draw;
 
     public int getStart() {

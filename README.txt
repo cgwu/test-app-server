@@ -1,4 +1,5 @@
 打包命令: $ mvn clean package -Dmaven.test.skip=true
+nohup mvn spring-boot:run &
 
 common模块：  公共类
 app模块:      api和backstage

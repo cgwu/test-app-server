@@ -50,11 +50,12 @@ var Datatable = function() {
                         "metronicAjaxRequestGeneralError": "Could not complete request. Please check your internet connection",
 
                         // data tables spesific
+                        "loadingRecords": "请稍等 ...",
                         "lengthMenu": "查看 _MENU_ 条记录每页",
-                        "sInfo": "找到 _TOTAL_ 条记录",
-                        "infoEmpty": "No records found to show",
-                        "emptyTable": "No data available in table",
-                        "zeroRecords": "No matching records found",
+                        "info": "找到 _TOTAL_ 条记录",
+                        "infoEmpty": "未找到相关记录",
+                        "emptyTable": "数据表中无记录",
+                        "zeroRecords": "未找到相关记录",
                         "paginate": {
                             "previous": "上一页",
                             "next": "下一页",

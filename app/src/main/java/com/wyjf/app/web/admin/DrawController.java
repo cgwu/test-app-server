@@ -1,16 +1,23 @@
 package com.wyjf.app.web.admin;
 
+import com.querydsl.core.types.Predicate;
 import com.wyjf.app.api.ApiFactory;
 import com.wyjf.app.api.ApiResult;
 import com.wyjf.app.service.DrawService;
 import com.wyjf.common.domain.Draw;
+import com.wyjf.common.domain.QDraw;
 import com.wyjf.common.message.AjaxPageRequest;
+import com.wyjf.common.message.DrawQueryRequest;
 import com.wyjf.common.repository.DrawRepo;
 import org.hibernate.validator.constraints.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,13 +51,26 @@ public class DrawController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public Map<Object, Object> listQuery(@ModelAttribute AjaxPageRequest req) {
-        List<Draw> users = drawRepo.findAll();
+    public Map<Object, Object> listQuery(@ModelAttribute DrawQueryRequest req) {
+        LocalDate drawDay = LocalDate.now();
+        Predicate predicate =null;
+        if(!StringUtils.isEmpty(req.getDrawDay())){
+            drawDay = LocalDate.parse(req.getDrawDay());
+            predicate = QDraw.draw.drawDay.eq(drawDay);
+        }
+        else
+            predicate = QDraw.draw.drawDay.goe(drawDay);
+
+        PageRequest preq = new PageRequest(req.getStart()/req.getLength(), req.getLength(), Sort.Direction.ASC, "did");
+
+//        log.info("columns长度:{},order:{}",req.getColumns().size(),req.getOrder().size());
+
+        Page<Draw> rows = drawRepo.findAll(predicate,preq);
         HashMap map = new HashMap();
-        map.put("data", users);
+        map.put("data", rows.getContent());
         map.put("draw", req.getDraw());
-        map.put("recordsTotal", users.size());
-        map.put("recordsFiltered", users.size());
+        map.put("recordsTotal", rows.getTotalElements());
+        map.put("recordsFiltered", rows.getTotalElements());
         return map;
     }
 

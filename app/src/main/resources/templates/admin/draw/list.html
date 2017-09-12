@@ -60,13 +60,16 @@
                         <td> </td>
                         <td></td>
                         <td>
-                            <input type="text" class="form-control form-filter input-sm" name="order_id"> </td>
+                            <div class="input-group input-medium">
+                            <input name="drawDay" class="form-control form-filter date-picker" id="dpDrawDay" type="text" data-date-format="yyyy-mm-dd">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar bigger-110"></i>
+                                </span>
+                            </div>
                         </td>
-                        <td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -148,13 +151,6 @@
                     "order": [
                         [1, "asc"]
                     ],// set first column as a default sort by asc,
-
-                    "language": {
-                        "loadingRecords": "Please wait ...",
-                        "zeroRecords": "No records",
-                        "emptyTable": "No data available in table",
-                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    },
 
                     deferRender:    true,
                     scroller: {
