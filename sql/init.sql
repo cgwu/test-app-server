@@ -69,6 +69,7 @@ create table log_verifycode
 alter table log_verifycode comment '验证码记录';
 
 
+drop index idx_draw_day_seq on draw;
 
 drop table if exists draw;
 
@@ -77,7 +78,9 @@ drop table if exists draw;
 /*==============================================================*/
 create table draw
 (
-  did                  char(9) not null comment '盘口ID(YYYYMMDD[1-5])',
+  did                  serial not null comment '盘口ID',
+  draw_day             date comment '盘口日期',
+  draw_seq             int comment '当天序号(1-5)',
   start_date           datetime not null comment '开始日期时间',
   end_date             datetime not null comment '结束时间',
   amount_up            decimal(19,2) not null default 0 comment '投涨总额',
@@ -87,6 +90,16 @@ create table draw
 ) ENGINE=InnoDB;
 
 alter table draw comment '盘口';
+
+/*==============================================================*/
+/* Index: idx_draw_day_seq                                      */
+/*==============================================================*/
+create unique index idx_draw_day_seq on draw
+(
+  draw_day,
+  draw_seq
+);
+
 
 
 drop table if exists ticket;

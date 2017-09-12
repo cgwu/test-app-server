@@ -33,7 +33,7 @@
             <div class="table-container">
                 <div class="table-actions-wrapper">
                     <span> </span>
-                    <a href="#modal-table" data-toggle="modal" class="btn btn-xs btn-pink">增加盘口管理</a>
+                    <a href="#modal-table" data-toggle="modal" class="btn btn-xs btn-pink">增加盘口</a>
                 </div>
 
                 <table id="tbData" class="table table-striped table-bordered table-hover">
@@ -213,8 +213,10 @@
             $('#frmAdd').on('submit', function(e) {
                 e.preventDefault();
                 $(this).ajaxSubmit({
-                    success:function(data){
-                        console.log(data);
+                    success:function(rsp){
+//                        if(rsp.code != 0){
+                            bootbox.alert(rsp.msg);
+//                        }
                     }
                 });
             });
