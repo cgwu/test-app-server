@@ -112,12 +112,13 @@ drop table if exists ticket;
 create table ticket
 (
   tid                  bigint not null auto_increment comment '自增ID',
-  sid                  char(18) not null default '' comment '票ID(15位时间戳+3位随机数)',
+  sid                  varchar(18) not null default '' comment '票流水号(15位时间戳+3位随机数)',
   uid                  bigint not null comment '会员ID',
   did                  bigint not null comment '盘口ID',
   direction            int not null default 0 comment '方向（涨1、跌0）',
   amount               decimal(19,2) not null default 0 comment '金额',
   real_amount          decimal(19,2) not null default 0 comment '真实金额(有可能有虚拟数据)',
+  buy_time             datetime not null comment '购买时间',
   status               int not null default 0 comment '状态(未结账0,已结账1)',
   primary key (tid)
 ) ENGINE=InnoDB;

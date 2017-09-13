@@ -10,7 +10,7 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
  */
 public interface TicketRepo extends JpaRepository<Ticket, Long>, QueryDslPredicateExecutor<Ticket> {
 
-    @Procedure("sp_buy_ticket")
-    public int buy(int a, int b);
+//    @Procedure("sp_buy_ticket")
+//    public int buy(int a, int b);
 
 }

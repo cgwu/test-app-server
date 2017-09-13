@@ -1,9 +1,8 @@
-package com.wyjf.app.repository;
+package com.wyjf.app.service;
 
-import com.wyjf.common.domain.Draw;
 import com.wyjf.common.domain.Ticket;
-import com.wyjf.common.repository.DrawRepo;
 import com.wyjf.common.repository.TicketRepo;
+import com.wyjf.common.util.CommonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -12,38 +11,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by Administrator on 2017/9/1.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TicketRepoTest {
-    private static final Logger log = LoggerFactory.getLogger(TicketRepoTest.class);
+public class TicketServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(TicketServiceTest.class);
 
     @Autowired
-    private TicketRepo repo;
+    private TicketService ticketService;
 
     @Test
     public void testSave() {
         Ticket ticket  = new Ticket();
+        ticket.setSid(CommonUtil.getSerialNO());
+        ticket.setUid(1L);
         ticket.setDid(1L);
-        ticket.setStatus(1);
-        ticket.setAmount(123.315);
+        ticket.setDirection(1);
+        ticket.setAmount(100);
         ticket.setRealAmount(100);
-        ticket.setDirection(0);
-        ticket.setUid(6606);
-
-        repo.save(ticket);
-        log.info("保存测试票成功!");
-    }
-
-    @Test
-    public void testBuy() {
-//        int ret = repo.buy(6,3);
-//        log.info("ret:{}",ret);
+        ticket.setBuyTime(LocalDateTime.now());
+        ticket.setStatus(1);
+        ticketService.buy(ticket);
+        log.info("测试买票成功!");
     }
 
 }

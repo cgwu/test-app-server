@@ -1,5 +1,6 @@
 package com.wyjf.app.util;
 
+import com.wyjf.common.util.CommonUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class TestDateTime {
     private static final DateTimeFormatter format2 = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
 
     @Test
-    public void testDate(){
+    public void testDate() {
         LocalDate ld = LocalDate.now();
         log.info(ld.toString());
         LocalTime lt = LocalTime.now();
@@ -39,7 +40,6 @@ public class TestDateTime {
         Instant timestamp = Instant.now();
         log.info(timestamp.toString());
     }
-
 
 
     @Test
@@ -56,11 +56,17 @@ public class TestDateTime {
         Random random = new Random();
 //        IntStream intStream = random.ints(0, 100);
         for (int i = 0; i < 10; i++) {
-            String s = String.format("%03d",random.nextInt(1000));
+            String s = String.format("%03d", random.nextInt(1000));
 //            log.info("随机整数:{}", random.nextInt(1000));
             log.info(s);
         }
     }
 
+    @Test
+    public void TestSerialNO() {
+        for (int i = 0; i < 10; i++) {
+            log.info(CommonUtil.getSerialNO());
+        }
+    }
 
 }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2017/8/31 0031.
@@ -142,4 +143,17 @@ public class CommonUtil {
         LocalDateTime time = LocalDateTime.now();
         return time.plusDays(10);
     }
+
+    //线程安全
+    private static final DateTimeFormatter fmtSerialNO = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
+
+    /**
+     * 按时间获取流水号
+     * @return
+     */
+    public static String getSerialNO(){
+        Random random = new Random();
+        return LocalDateTime.now().format(fmtSerialNO) + String.format("%03d",random.nextInt(1000));
+    }
+
 }
