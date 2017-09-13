@@ -26,11 +26,10 @@ public class TicketRepoTest {
     @Autowired
     private TicketRepo repo;
 
-
     @Test
     public void testSave() {
         Ticket ticket  = new Ticket();
-        ticket.setDid("201709015");
+        ticket.setDid(1L);
         ticket.setStatus(1);
         ticket.setAmount(123.315);
         ticket.setRealAmount(100);
@@ -39,6 +38,12 @@ public class TicketRepoTest {
 
         repo.save(ticket);
         log.info("保存测试票成功!");
+    }
+
+    @Test
+    public void testBuy() {
+        int ret = repo.buy(6,3);
+        log.info("ret:{}",ret);
     }
 
 }

@@ -1,18 +1,21 @@
 package com.wyjf.common.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by Administrator on 2017/9/1.
  */
 @Entity
+//@NamedStoredProcedureQuery(name = "Ticket.buy", procedureName = "sp_buy_ticket", parameters = {
+//        @StoredProcedureParameter(mode = ParameterMode.IN, name = "a", type = Integer.class),
+//        @StoredProcedureParameter(mode = ParameterMode.IN, name = "b", type = Integer.class),
+//        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "ret", type = Integer.class) })
 public class Ticket {
     @Id
     private long tid;
     private String sid;
     private long uid;
-    private String did;
+    private long did;
     private int direction;
     private double amount;
     private double realAmount;
@@ -42,11 +45,11 @@ public class Ticket {
         this.uid = uid;
     }
 
-    public String getDid() {
+    public long getDid() {
         return did;
     }
 
-    public void setDid(String did) {
+    public void setDid(long did) {
         this.did = did;
     }
 

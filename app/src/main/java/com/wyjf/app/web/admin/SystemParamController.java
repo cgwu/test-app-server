@@ -52,8 +52,8 @@ public class SystemParamController {
         PageRequest pReq = req.getPage(http);
         Predicate predicate = null;
         if (req.getDataKey() != null) {
-            predicate = QSystemParam.systemParam.dataKey.likeIgnoreCase("%" + req.getDataKey() + "%")
-                    .or(QSystemParam.systemParam.comment.likeIgnoreCase("%" + req.getComment() + "%"));
+            predicate = QSystemParam.systemParam.dataKey.like("%" + req.getDataKey() + "%")
+                    .and(QSystemParam.systemParam.comment.like("%" + req.getComment() + "%"));
         }
         log.info("{},{},{}", req.getDataKey(), req.getComment(), predicate == null);
         Page<SystemParam> page = repo.findAll(predicate, pReq);     // 可以为空，代表无where条件

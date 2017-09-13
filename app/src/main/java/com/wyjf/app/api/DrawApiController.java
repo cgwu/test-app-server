@@ -23,6 +23,7 @@ public class DrawApiController {
     @Autowired
     private DrawRepo drawRepo;
 
+    /*
     @RequestMapping(value = {"/{date}"}, method = RequestMethod.GET)
     @ApiImplicitParams(
             @ApiImplicitParam(name = "date", value = "日期（格式：2017-09-12）", required = true, paramType = "path", dataType = "String")
@@ -45,6 +46,29 @@ public class DrawApiController {
             return ApiFactory.createResult(list.get(0));
         else
             return ApiFactory.fail(2, "无相关记录");
+    }
+    */
+
+    @RequestMapping(value = {"/query"}, method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期(格式：2017-09-12)", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "index", value = "1-5(5代表全天)", required = false, paramType = "query", dataType = "Int")
+    })
+    @ApiOperation(value = "查询某天某个盘口", notes = "查询某天某个盘口详细接口", produces = "application/json")
+    public ApiResult query(@RequestParam String date, @RequestParam(required = false) Integer index) {
+        List<Draw> list = null;
+        if(index == null){
+            //查全天
+            list = drawRepo.findByDrawDay(LocalDate.parse(date));
+            return ApiFactory.createResult(list);
+        }
+        else{
+            list = drawRepo.findByDrawDayAndDrawSeq(LocalDate.parse(date), index);
+            if (list.size() > 0)
+                return ApiFactory.createResult(list.get(0));
+            else
+                return ApiFactory.fail(2, "无相关记录");
+        }
     }
 
 }

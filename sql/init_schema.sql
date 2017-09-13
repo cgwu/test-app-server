@@ -1,3 +1,5 @@
+/* 1.初始数据库结构 */
+
 -- 创建数据库: wyjf_dev
 create database wyjf_dev character set utf8 collate utf8_general_ci;
 
@@ -13,7 +15,6 @@ CREATE TABLE admin (
   primary key (AID)
 ) ENGINE=InnoDB;
 
-insert into admin (name, password, enabled) values ('root','123',true);
 
 drop table if exists user;
 
@@ -29,6 +30,8 @@ create table user
   gender               char(1) comment '性别',
   password_login       varchar(64) comment '登陆密码',
   password_trade       varchar(64) comment '提现密码',
+  token                varchar(64) comment '用户token',
+  token_time           datetime    comment 'token有效期'
   primary key (uid)
 ) ENGINE=InnoDB;
 
@@ -101,7 +104,6 @@ create unique index idx_draw_day_seq on draw
 );
 
 
-
 drop table if exists ticket;
 
 /*==============================================================*/
@@ -112,7 +114,7 @@ create table ticket
   tid                  bigint not null auto_increment comment '自增ID',
   sid                  char(18) not null default '' comment '票ID(15位时间戳+3位随机数)',
   uid                  bigint not null comment '会员ID',
-  did                  char(9) not null comment '盘口ID',
+  did                  bigint not null comment '盘口ID',
   direction            int not null default 0 comment '方向（涨1、跌0）',
   amount               decimal(19,2) not null default 0 comment '金额',
   real_amount          decimal(19,2) not null default 0 comment '真实金额(有可能有虚拟数据)',
@@ -121,6 +123,25 @@ create table ticket
 ) ENGINE=InnoDB;
 
 alter table ticket comment '票';
+
+
+drop table if exists log_balance;
+
+/*==============================================================*/
+/* Table: log_balance                                           */
+/*==============================================================*/
+create table log_balance
+(
+  lid                  serial not null,
+  uid                  bigint not null comment '用户ID',
+  amount               decimal(19,2) not null comment '变动金额',
+  type                 int not null comment '1充值，2取款，3下注，4中奖',
+  log_time             datetime not null comment '操作日志时间',
+  primary key (lid)
+) ENGINE=InnoDB;
+
+alter table log_balance comment '用户余额日志表';
+
 
 
 
