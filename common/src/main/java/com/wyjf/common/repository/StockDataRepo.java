@@ -19,13 +19,13 @@ public interface StockDataRepo extends JpaRepository<StockData, Long> {
             "FROM " +
             "t_stock_data tsd " +
             "WHERE " +
-            "1=1 AND DATE_FORMAT(tsd.time_time, '%Y/%m/%d') = DATE_FORMAT(:date1, '%Y/%m/%d') " +
+            "1=1 AND DATE_FORMAT(tsd.time_time, '%Y-%m-%d') = DATE_FORMAT(:date1, '%Y-%m-%d') " +
             "AND ((DATE_FORMAT(tsd.time_time, '%H:%i') >= '09:30' " +
             "AND DATE_FORMAT(tsd.time_time, '%H:%i') <= '11:30') " +
             "OR (DATE_FORMAT(tsd.time_time, '%H:%i') >= '13:00'" +
             "AND DATE_FORMAT(tsd.time_time, '%H:%i') <= '15:00')) " +
             "GROUP BY " +
-            "DATE_FORMAT(tsd.time_time, '%Y/%m/%d %H:%i')) " +
+            "DATE_FORMAT(tsd.time_time, '%Y-%m-%d %H:%i')) " +
             "ORDER BY tsd1.time_time DESC", nativeQuery = true)
     public List findSockDataMin(@Param("date1") String date);
 
@@ -41,8 +41,8 @@ public interface StockDataRepo extends JpaRepository<StockData, Long> {
             "FROM t_stock_data tsd1 " +
             "WHERE 1=1 " +
             "AND (" +
-            "(DATE_FORMAT(tsd1.time_time, '%H') >= '09' AND DATE_FORMAT(tsd1.time_time, '%H') <= '11') " +
-            " OR (DATE_FORMAT(tsd1.time_time, '%H') >= '13'AND DATE_FORMAT(tsd1.time_time, '%H') <= '15')" +
+            "(DATE_FORMAT(tsd1.time_time, '%H:%i') >= '09:30' AND DATE_FORMAT(tsd1.time_time, '%H:%i') <= '11:30') " +
+            " OR (DATE_FORMAT(tsd1.time_time, '%H:%i') >= '13:00'AND DATE_FORMAT(tsd1.time_time, '%H:%i') <= '15:00')" +
             ") " +
             "GROUP BY DATE_FORMAT(tsd1.time_time, '%Y/%m/%d %H')" +
             "ORDER BY tsd1.time_time DESC " +
@@ -61,8 +61,8 @@ public interface StockDataRepo extends JpaRepository<StockData, Long> {
             "FROM t_stock_data tsd1 " +
             "WHERE 1=1 " +
             "AND (" +
-            "(DATE_FORMAT(tsd1.time_time, '%H') >= '09' AND DATE_FORMAT(tsd1.time_time, '%H') <= '11') " +
-            " OR (DATE_FORMAT(tsd1.time_time, '%H') >= '13'AND DATE_FORMAT(tsd1.time_time, '%H') <= '15')" +
+            "(DATE_FORMAT(tsd1.time_time, '%H:%i') >= '09:30' AND DATE_FORMAT(tsd1.time_time, '%H:%i') <= '11:30') " +
+            " OR (DATE_FORMAT(tsd1.time_time, '%H:%i') >= '13:00'AND DATE_FORMAT(tsd1.time_time, '%H:%i') <= '15:00')" +
             ") " +
             "GROUP BY DATE_FORMAT(tsd1.time_time, '%Y/%m/%d')" +
             "ORDER BY tsd1.time_time DESC " +

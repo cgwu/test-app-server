@@ -19,22 +19,25 @@ public class CommonUtil {
 
 
     private static final String pwdstr = "wuyou";
+
     /**
      * 获取6位数随机数
+     *
      * @return
      */
-    public static String getVerifyCode(){
-        Double code = (Math.random()*9+1)*100000;
+    public static String getVerifyCode() {
+        Double code = (Math.random() * 9 + 1) * 100000;
         return new Integer(code.intValue()).toString();
     }
 
     /**
      * yyyy/MM/dd HH:mm:ss转date
+     *
      * @param str
      * @param pattern
      * @return
      */
-    public static Date stringToDateTime(String str, String pattern){
+    public static Date stringToDateTime(String str, String pattern) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
         ZoneId zone = ZoneId.systemDefault();
         Instant instant = LocalDateTime.parse(str, dtf).atZone(zone).toInstant();
@@ -44,11 +47,12 @@ public class CommonUtil {
 
     /**
      * yyyy/MM/dd转date
+     *
      * @param str
      * @param pattern
      * @return
      */
-    public static Date stringToDate(String str, String pattern){
+    public static Date stringToDate(String str, String pattern) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
         ZoneId zone = ZoneId.systemDefault();
         Instant instant = LocalDate.parse(str, dtf).atStartOfDay().atZone(zone).toInstant();
@@ -58,11 +62,12 @@ public class CommonUtil {
 
     /**
      * datetime转string
+     *
      * @param date
      * @param pattern
      * @return
      */
-    public static String dateToString(Date date, String pattern){
+    public static String dateToString(Date date, String pattern) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
         LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
         return ldt.format(dtf);
@@ -75,7 +80,7 @@ public class CommonUtil {
      * @return String
      */
     public final static String MD5(String s) {
-        char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         try {
             byte[] btInput = s.getBytes();
@@ -103,8 +108,7 @@ public class CommonUtil {
     /**
      * 对明文密码进行加密操作，并返回加密码后的密码
      *
-     * @param pwd
-     *            明文密码
+     * @param pwd 明文密码
      * @return
      */
     public final static String generatePwd(String pwd) {
@@ -114,8 +118,7 @@ public class CommonUtil {
     /**
      * 检查o是否为空
      *
-     * @param o
-     *            要检查的对象
+     * @param o 要检查的对象
      * @return
      */
     public static Boolean checkEmpty(Object o) {
@@ -128,5 +131,15 @@ public class CommonUtil {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 获取当前时间加天数
+     * days 传进来的天数，负数减天数
+     * @return
+     */
+    public static LocalDateTime getTokenDateTime(int days){
+        LocalDateTime time = LocalDateTime.now();
+        return time.plusDays(10);
     }
 }

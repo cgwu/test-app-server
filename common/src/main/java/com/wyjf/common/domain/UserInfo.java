@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Administrator on 2017/9/1.
  */
 @Entity
-//@Table(name = "user_info")
+@Table(name = "user_info")
 public class UserInfo {
     @Id
     protected Long uid;

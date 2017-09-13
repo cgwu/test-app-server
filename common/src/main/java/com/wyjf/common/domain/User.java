@@ -1,6 +1,7 @@
 package com.wyjf.common.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Created by dannis on 2017/8/22.
@@ -18,6 +19,8 @@ public class User {
     private String gender;
     private String passwordLogin;
     private String passwordTrade;
+    private String token;
+    private LocalDateTime tokenTime;
 
     public Long getUid() {
         return uid;
@@ -73,6 +76,22 @@ public class User {
 
     public void setPasswordTrade(String passwordTrade) {
         this.passwordTrade = passwordTrade;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public LocalDateTime getTokenTime() {
+        return tokenTime;
+    }
+
+    public void setTokenTime(LocalDateTime tokenTime) {
+        this.tokenTime = tokenTime;
     }
 
     @Override

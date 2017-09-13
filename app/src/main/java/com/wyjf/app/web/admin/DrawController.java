@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
@@ -37,6 +38,9 @@ import java.util.Map;
 @RequestMapping("/admin/draw")
 public class DrawController {
     private static final Logger log = LoggerFactory.getLogger(DrawController.class);
+
+    @Autowired
+    private HttpServletRequest request;
 
     @Autowired
     private DrawRepo drawRepo;

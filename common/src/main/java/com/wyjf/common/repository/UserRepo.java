@@ -14,7 +14,12 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     public User findByNickname(String name);
 
+    public User findByPhone(String phone);
+
     @Query(value = "SELECT tu FROM User tu WHERE tu.phone =:name AND tu.passwordLogin = :pwd")
     public User findByPhoneOrPwd(@Param("name") String phone, @Param("pwd") String pwd);
+
+    @Query(value = "SELECT tu FROM User tu WHERE tu.token =:token AND tu.tokenTime > NOW()")
+    public User findByTokenOrTime(@Param("token") String token);
 
 }

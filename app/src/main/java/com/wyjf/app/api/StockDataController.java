@@ -27,7 +27,7 @@ public class StockDataController {
     @ApiOperation(value = "分时", notes = "分时K线数据接口", produces = "application/json")
     @RequestMapping(value = {"/mh"}, method = RequestMethod.POST)
     @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
+            @ApiImplicitParam(name = "date", value = "日期（格式：2017-09-06）", required = true, paramType = "query", dataType = "String")
     )
     public ApiResult stockdatamh(@RequestParam String date){
         List list = stockDataRepo.findSockDataMin(date);
@@ -52,7 +52,7 @@ public class StockDataController {
     @ApiOperation(value = "获取参数传进来那天最新1分钟的k数据", notes = "获取参数传进来那天最新1分钟的k数据接口", produces = "application/json")
     @RequestMapping(value = {"/m"}, method = RequestMethod.POST)
     @ApiImplicitParams(
-            @ApiImplicitParam(name = "date", value = "日期（格式：2017/09/06）", required = true, paramType = "query", dataType = "String")
+            @ApiImplicitParam(name = "date", value = "日期（格式：2017-09-06）", required = true, paramType = "query", dataType = "String")
     )
     public ApiResult stockdatam(@RequestParam String date){
         List list = stockDataRepo.findSockDataMin(date);
