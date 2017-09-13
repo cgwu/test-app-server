@@ -40,7 +40,7 @@ public class DrawController {
     private static final Logger log = LoggerFactory.getLogger(DrawController.class);
 
     @Autowired
-    private HttpServletRequest request;
+    private HttpServletRequest http;
 
     @Autowired
     private DrawRepo drawRepo;
@@ -65,11 +65,9 @@ public class DrawController {
         else
             predicate = QDraw.draw.drawDay.goe(drawDay);
 
-        PageRequest preq = new PageRequest(req.getStart()/req.getLength(), req.getLength(), Sort.Direction.ASC, "did");
+        PageRequest pReq = req.getPage(http);
 
-//        log.info("columns长度:{},order:{}",req.getColumns().size(),req.getOrder().size());
-
-        Page<Draw> rows = drawRepo.findAll(predicate,preq);
+        Page<Draw> rows = drawRepo.findAll(predicate,pReq);
         HashMap map = new HashMap();
         map.put("data", rows.getContent());
         map.put("draw", req.getDraw());
