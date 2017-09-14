@@ -13,9 +13,9 @@ public class SystemParamService {
     @Autowired
     private SystemParamRepo repo;
 
-    public void saveOrUpdate(SystemParam pm){
+    public void saveOrUpdate(SystemParam pm) {
         SystemParam model = repo.findByDataKey(pm.getDataKey());
-        if(model == null) repo.save(pm);
+        if (model == null) repo.save(pm);
         else {
             model.setDataKey(pm.getDataKey());
             model.setDataVal(pm.getDataVal());
@@ -26,8 +26,8 @@ public class SystemParamService {
         }
     }
 
-    public int add(int a, int b){
-        return a+b;
+    public SystemParam findByKey(String key) {
+        return repo.findByDataKey(key);
     }
 
 }

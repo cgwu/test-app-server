@@ -69,4 +69,10 @@ public class TestDateTime {
         }
     }
 
+
+    @Test
+    public void testMinus(){
+        log.info(LocalDateTime.now().minusMinutes(10).toString());
+    }
+
 }
