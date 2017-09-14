@@ -10,6 +10,7 @@ import com.wyjf.common.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,20 +35,24 @@ public class TicketService {
 
     /**
      * 投票（涨、跌）
+     *
      * @param ticket
      * @return 状态码
-     *  1: 盘口不存在
-     *  2: 盘口投票时间已过
-     *  3: 会员不存在
-     *  4: 会员余额不足
-     *
+     * 1: 盘口不存在
+     * 2: 盘口投票时间已过
+     * 3: 会员不存在
+     * 4: 会员余额不足
+     * 5: 金额有误
      */
     @Transactional
-    public int buy(Ticket ticket){
+    public Pair<Integer, String> buy(Ticket ticket) {
+        if (ticket.getAmount() <= 0) {
+            return Pair.of(5, "金额有误");
+        }
         // 检查盘口存在
         Draw draw = drawRepo.findOne(ticket.getDid());
-        if(draw == null){
-            return 1;
+        if (draw == null) {
+            return Pair.of(1, "盘口不存在");
         }
 
         // 检查盘口时间
@@ -58,18 +63,18 @@ public class TicketService {
         } catch (NumberFormatException e) {
             log.error(e.getMessage());
         }
-        if(LocalDateTime.now().isAfter( draw.getStartDate().minusMinutes(beforeMins))){
-            return 2;
+        if (LocalDateTime.now().isAfter(draw.getStartDate().minusMinutes(beforeMins))) {
+            return Pair.of(2, "该盘口购买时间段已过");
         }
 
         // 检查会员存在
         User u = userRepo.findOne(ticket.getUid());
-        if(u==null){
-            return 3;
+        if (u == null) {
+            return Pair.of(3, "会员不存在");
         }
         // 检查金额
-        if(u.getBalance()< ticket.getRealAmount()){
-            return 4;
+        if (u.getBalance() < ticket.getRealAmount()) {
+            return Pair.of(4, "会员余额不足");
         }
 
         // 减去会员金额
@@ -78,14 +83,13 @@ public class TicketService {
         //保存票
         ticketRepo.save(ticket);
         //累计池
-        if(ticket.getDirection() == 1){
+        if (ticket.getDirection() == 1) {
             drawRepo.buyAmountUp(ticket.getDid(), ticket.getAmount());
-        }
-        else{
+        } else {
             drawRepo.buyAmountDown(ticket.getDid(), ticket.getAmount());
         }
         //保存日志 log_balance
 
-        return 0;
+        return Pair.of(0, "成功");
     }
 }

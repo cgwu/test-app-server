@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class TicketServiceTest {
 
     @Test
     public void testSave() {
-        Ticket ticket  = new Ticket();
+        Ticket ticket = new Ticket();
         ticket.setSid(CommonUtil.getSerialNO());
         ticket.setUid(4L);
         ticket.setDid(13L);
@@ -35,8 +36,8 @@ public class TicketServiceTest {
         ticket.setRealAmount(100);
         ticket.setBuyTime(LocalDateTime.now());
         ticket.setStatus(0);
-        int code = ticketService.buy(ticket);
-        log.info("测试买票，返回状态码:{}", code);
+        Pair<Integer, String> result = ticketService.buy(ticket);
+        log.info("测试买票，返回状态码:{},{}", result.getFirst(), result.getSecond());
     }
 
 }
