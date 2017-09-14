@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/9/12.
@@ -83,11 +80,17 @@ public class DrawApiController {
     public ApiResult query(@RequestParam String date) {
         List<Date> ld = drawRepo.findRecentDrawDate(date, 5);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E");
+        /*
         Map<LocalDate, String> map = new LinkedHashMap<LocalDate, String>();
         for (Date d : ld) {
             map.put(d.toLocalDate(), d.toLocalDate().format(formatter));
         }
-        return ApiFactory.createResult(map);
+        */
+        List<String> list = new ArrayList();
+        for (Date d : ld) {
+            list.add(d.toLocalDate().toString() + " " + d.toLocalDate().format(formatter));
+        }
+        return ApiFactory.createResult(list);
     }
 
 }
