@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/1.
@@ -51,6 +53,16 @@ public class DrawRepoTest {
         Draw d =  repo.findOne(1L);
         log.info(d.toString());
         log.info(JSON.toJSONString(d));
+    }
+
+    @Test
+    public void testGetDrawDate(){
+        List<Date> ld =  repo.findRecentDrawDate("2017-09-14",5);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E");
+        for (Date d:ld) {
+            log.info(d.toLocalDate().format(formatter));
+            log.info(d.toString());
+        }
     }
 
 }

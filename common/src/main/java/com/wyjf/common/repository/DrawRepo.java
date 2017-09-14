@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,5 +27,9 @@ public interface DrawRepo extends JpaRepository<Draw, Long>, QueryDslPredicateEx
     @Modifying
     @Query(value = "update draw set amount_down = amount_down + :amount where did = :did", nativeQuery = true)
     public void buyAmountDown(@Param("did") long did, @Param("amount") double amount);
+
+
+    @Query(value = "select distinct draw_day from draw where draw_day  >= :beginDate limit :cnt", nativeQuery = true)
+    public List<Date> findRecentDrawDate(@Param("beginDate") String beginDate, @Param("cnt") int cnt);
 
 }

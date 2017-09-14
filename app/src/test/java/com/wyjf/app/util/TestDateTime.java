@@ -75,4 +75,12 @@ public class TestDateTime {
         log.info(LocalDateTime.now().minusMinutes(10).toString());
     }
 
+
+    @Test
+    public void testDayOfWeek(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E");
+        String text = LocalDate.now().format(formatter);
+        log.info(text);
+    }
+
 }
