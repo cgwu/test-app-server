@@ -1,6 +1,8 @@
 package com.wyjf.app.web.admin;
 
 import com.querydsl.core.types.Predicate;
+import com.wyjf.app.api.ApiFactory;
+import com.wyjf.app.api.ApiResult;
 import com.wyjf.common.domain.QSystemParam;
 import com.wyjf.common.domain.SystemParam;
 import com.wyjf.common.domain.User;
@@ -16,11 +18,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,13 @@ public class SystemParamController {
         map.put("recordsTotal", page.getTotalElements());
         map.put("recordsFiltered", page.getTotalElements());
         return map;
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult addByDate(@ModelAttribute SystemParam param) {
+        repo.save(param);
+        return ApiFactory.success("保存成功!");
     }
 
 }

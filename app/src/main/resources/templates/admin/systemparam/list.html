@@ -33,7 +33,7 @@
             <div class="table-container">
             <div class="table-actions-wrapper">
                 <span> </span>
-                <button class="btn btn-xs btn-pink">增加系统参数</button>
+                <a href="#modal-table" data-toggle="modal" class="btn btn-xs btn-pink">增加系统参数</a>
             </div>
 
             <table id="tbData" class="table table-striped table-bordered table-hover">
@@ -80,6 +80,8 @@
         </div>
     </div>
 
+    <div th:replace="admin/systemparam/add"></div>
+
 </div>
 
 <th:block layout:fragment="pagescript">
@@ -100,8 +102,8 @@
 
 <th:block layout:fragment="inlinescript">
 <script>
+    var grid = new Datatable();
     var fnInitTable = function () {
-        var grid = new Datatable();
         grid.init({
             src: $("#tbData"),
             onSuccess: function (grid, response) {
@@ -126,11 +128,11 @@
                         }
                     },
                     {data:'id'},
-                    {data:'dataKey', orderable: false},
+                    {data:'dataKey'},
                     {data:'dataVal', orderable: false },
                     {data:'comment', orderable: false},
-                    {data:'sortId', orderable: false},
-                    {data:'pid', orderable: false},
+                    {data:'sortId'},
+                    {data:'pid'},
                     {
                         data: 'id',
                         render: function ( data, type, full, meta ) {
@@ -190,6 +192,19 @@
 
     $(function() {
         fnInitTable();
+
+        $('#frmAdd').on('submit', function(e) {
+            e.preventDefault();
+            $(this).ajaxSubmit({
+                success:function(rsp) {
+                    if(rsp.code == 0){
+                        grid.getDataTable().ajax.reload();
+                    }
+                    bootbox.alert(rsp.msg);
+                }
+            });
+        });
+
     });
 </script>
 </th:block>
