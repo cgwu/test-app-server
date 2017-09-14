@@ -28,15 +28,15 @@ public class TicketServiceTest {
     public void testSave() {
         Ticket ticket  = new Ticket();
         ticket.setSid(CommonUtil.getSerialNO());
-        ticket.setUid(1L);
-        ticket.setDid(1L);
-        ticket.setDirection(1);
+        ticket.setUid(4L);
+        ticket.setDid(13L);
+        ticket.setDirection(0); // 方向：涨1，跌0
         ticket.setAmount(100);
         ticket.setRealAmount(100);
         ticket.setBuyTime(LocalDateTime.now());
-        ticket.setStatus(1);
-        ticketService.buy(ticket);
-        log.info("测试买票成功!");
+        ticket.setStatus(0);
+        int code = ticketService.buy(ticket);
+        log.info("测试买票，返回状态码:{}", code);
     }
 
 }

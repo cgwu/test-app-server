@@ -3,6 +3,7 @@ package com.wyjf.app.service;
 import com.wyjf.common.domain.Draw;
 import com.wyjf.common.domain.SystemParam;
 import com.wyjf.common.domain.Ticket;
+import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.DrawRepo;
 import com.wyjf.common.repository.TicketRepo;
 import com.wyjf.common.repository.UserRepo;
@@ -36,6 +37,10 @@ public class TicketService {
      * @param ticket
      * @return 状态码
      *  1: 盘口不存在
+     *  2: 盘口投票时间已过
+     *  3: 会员不存在
+     *  4: 会员余额不足
+     *
      */
     @Transactional
     public int buy(Ticket ticket){
@@ -53,10 +58,19 @@ public class TicketService {
         } catch (NumberFormatException e) {
             log.error(e.getMessage());
         }
-//        LocalDateTime.now().isAfter( draw.getStartDate().minusMinutes(beforeMins))
+        if(LocalDateTime.now().isAfter( draw.getStartDate().minusMinutes(beforeMins))){
+            return 2;
+        }
 
         // 检查会员存在
+        User u = userRepo.findOne(ticket.getUid());
+        if(u==null){
+            return 3;
+        }
         // 检查金额
+        if(u.getBalance()< ticket.getRealAmount()){
+            return 4;
+        }
 
         // 减去会员金额
         userRepo.addBalance(ticket.getUid(), -ticket.getAmount());
