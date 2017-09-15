@@ -56,13 +56,7 @@ public class TicketService {
         }
 
         // 检查盘口时间
-        SystemParam pm = systemParamService.findByKey("INT_BeforeBuyMins");
-        int beforeMins = 0;
-        try {
-            beforeMins = Integer.parseInt(pm.getDataVal());
-        } catch (NumberFormatException e) {
-            log.error(e.getMessage());
-        }
+        int beforeMins = systemParamService.getBeforeBuyMins();
         if (LocalDateTime.now().isAfter(draw.getStartDate().minusMinutes(beforeMins))) {
             return Pair.of(2, "该盘口购买时间段已过");
         }

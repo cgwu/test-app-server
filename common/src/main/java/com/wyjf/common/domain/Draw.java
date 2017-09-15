@@ -25,6 +25,20 @@ public class Draw {
     private int amountDown;
     private int status;
 
+//    public Draw() {
+//    }
+//
+//    public Draw(Long did, LocalDate drawDay, int drawSeq, LocalDateTime startDate, LocalDateTime endDate, int amountUp, int amountDown, int status) {
+//        this.did = did;
+//        this.drawDay = drawDay;
+//        this.drawSeq = drawSeq;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.amountUp = amountUp;
+//        this.amountDown = amountDown;
+//        this.status = status;
+//    }
+
     public int getAmountUp() {
         return amountUp;
     }

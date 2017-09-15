@@ -1,6 +1,8 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.SystemParamService;
 import com.wyjf.common.domain.Draw;
+import com.wyjf.common.message.DrawEx;
 import com.wyjf.common.repository.DrawRepo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -10,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -21,6 +26,9 @@ import java.util.*;
 @RequestMapping(value = "/api/draw")
 @Api(description = "盘口接口")
 public class DrawApiController {
+
+    @Autowired
+    private SystemParamService systemParamService;
 
     @Autowired
     private DrawRepo drawRepo;
@@ -58,15 +66,38 @@ public class DrawApiController {
     })
     @ApiOperation(value = "查询某天某个盘口", notes = "查询某天某个盘口详细接口", produces = "application/json")
     public ApiResult query(@RequestParam String date, @RequestParam(required = false) Integer index) {
-        List<Draw> list = null;
+        int beforeMins = systemParamService.getBeforeBuyMins();
         if (index == null) {
             //查全天
-            list = drawRepo.findByDrawDay(LocalDate.parse(date));
-            return ApiFactory.createResult(list);
+            List<DrawEx> listEx = new ArrayList<>(5);
+            List<Draw> list = drawRepo.findByDrawDay(LocalDate.parse(date));
+
+            LocalDateTime now = LocalDateTime.now();
+            for (Draw d : list) {
+                LocalDateTime deadline = d.getStartDate().minus(beforeMins, ChronoUnit.MINUTES);
+                long countdown = 0;
+                if (now.isBefore(deadline)) {
+                    Duration du= Duration.between(now,deadline);
+                    countdown = du.toMillis();
+                }
+                DrawEx dex = new DrawEx(d, countdown);
+                listEx.add(dex);
+            }
+            return ApiFactory.createResult(listEx);
         } else {
-            list = drawRepo.findByDrawDayAndDrawSeq(LocalDate.parse(date), index);
-            if (list.size() > 0)
-                return ApiFactory.createResult(list.get(0));
+            List<Draw> list = drawRepo.findByDrawDayAndDrawSeq(LocalDate.parse(date), index);
+            if (list.size() > 0) {
+                Draw d = list.get(0);
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime deadline = d.getStartDate().minus(beforeMins, ChronoUnit.MINUTES);
+                long countdown = 0;
+                if (now.isBefore(deadline)) {
+                    Duration du= Duration.between(now,deadline);
+                    countdown = du.toMillis();
+                }
+                DrawEx dex = new DrawEx(d, countdown);
+                return ApiFactory.createResult(dex);
+            }
             else
                 return ApiFactory.fail(2, "无相关记录");
         }

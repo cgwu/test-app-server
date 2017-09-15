@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -71,16 +73,27 @@ public class TestDateTime {
 
 
     @Test
-    public void testMinus(){
+    public void testMinus() {
         log.info(LocalDateTime.now().minusMinutes(10).toString());
     }
 
 
     @Test
-    public void testDayOfWeek(){
+    public void testDayOfWeek() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E");
         String text = LocalDate.now().format(formatter);
         log.info(text);
     }
 
+    @Test
+    public void testTimeDiff() {
+        LocalDateTime now = LocalDateTime.now();
+//        Duration du = Duration.ofMillis(123);
+        LocalDateTime ldt = now.minus(123, ChronoUnit.MILLIS);
+//        Period.between()
+        Duration du= Duration.between(ldt,now);
+        Long countdown = du.toMillis();
+        log.info("倒数:{}",countdown.toString());
+
+    }
 }
