@@ -145,4 +145,20 @@ alter table log_balance comment '用户余额日志表';
 
 
 
+/*==============================================================*/
+/* Table: ticket        充值订单表                               */
+/*==============================================================*/
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order` (
+  `oid`             bigint(20) NOT NULL comment '自增ID',
+  `order_number`    varchar(32) DEFAULT NULL comment '订单编号',
+  `order_status`    int(1) DEFAULT 0 comment '订单状态0未支付，1已支付',
+  `uid`             bigint(20) DEFAULT NULL comment '会员ID',
+  `order_moeny`      decimal(19,2) DEFAULT NULL comment '支付金额',
+  `order_type`      int(1) DEFAULT 0 comment '订单类型0微信，1支付宝',
+  `create_time`     datetime DEFAULT NULL comment '创建时间',
+  `pay_time`        datetime DEFAULT NULL comment '支付时间',
+  `remark`          varchar(128) DEFAULT NULL comment '备注',
+  PRIMARY KEY (`oid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

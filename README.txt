@@ -1,6 +1,8 @@
 打包命令: $ mvn clean package -Dmaven.test.skip=true
 nohup mvn spring-boot:run &
 
+mvn install:install-file -Dfile=alipay-sdk-java20170829142630.jar -DgroupId=com.alipay -DartifactId=alipay-sdk-java -Dversion=20170829142630 -Dpackaging=jar
+
 common模块：  公共类
 app模块:      api和backstage
 job模块:      自动任务
@@ -64,4 +66,13 @@ sha256sum:
 <script type="text/javascript" src="Scroller-1.4.2/js/dataTables.scroller.min.js"></script>
 <script type="text/javascript" src="Select-1.2.2/js/dataTables.select.min.js"></script>
 
+yum install psmisc
+
+$ cat update_start_app.sh
+#!/usr/bin/bash
+killall java
+mvn clean package -Dmaven.test.skip=true
+nohup java -jar app/target/app-0.0.1-SNAPSHOT.jar &
+sleep 5s
+tail nohup.out
 

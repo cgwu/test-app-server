@@ -27,10 +27,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/user")
 @Api(description = "用户个人信息接口")
-public class UserController {
+public class UserController extends BaseController{
 
-    @Autowired
-    private UserRepo userRepo;
     @Autowired
     private LogVerifyCodeRepo verfyCodeRepo;
     @Autowired
@@ -305,15 +303,6 @@ public class UserController {
             byte[] s = userinfo.getHeadThumb();
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(s);
-        }
-    }
-
-    public boolean checkToken(String token) {
-        User user = userRepo.findByTokenOrTime(token);
-        if (user != null) {
-            return true;
-        } else {
-            return false;
         }
     }
 

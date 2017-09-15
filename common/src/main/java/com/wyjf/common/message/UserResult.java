@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class UserResult extends User {
     private String headurl;
+    private Integer isSetTrade;
 
     public UserResult(User u, UserInfo userInfo) {
         this.setUid(u.getUid());
@@ -18,12 +19,11 @@ public class UserResult extends User {
         this.setGender(u.getGender());
         this.setToken(u.getToken());
         this.setBalance(u.getBalance());
-        this.setPasswordLogin(u.getPasswordLogin());
-        this.setPasswordTrade(u.getPasswordTrade());
+        this.setIsSetTrade(u.getPasswordTrade() != null ? 1 : 0);
         this.setTokenTime(u.getTokenTime());
         if (u != null && userInfo != null) {
             this.headurl = "/api/user/head/" + u.getUid() + "/" + new Date().getTime() + "/head.png";
-        }else{
+        } else {
             this.headurl = "";
         }
     }
@@ -34,5 +34,13 @@ public class UserResult extends User {
 
     public void setHeadurl(String headurl) {
         this.headurl = headurl;
+    }
+
+    public Integer getIsSetTrade() {
+        return isSetTrade;
+    }
+
+    public void setIsSetTrade(Integer isSetTrade) {
+        this.isSetTrade = isSetTrade;
     }
 }
