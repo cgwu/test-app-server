@@ -70,6 +70,7 @@ yum install psmisc
 
 $ cat update_start_app.sh
 #!/usr/bin/bash
+git pull origin master
 killall java
 mvn clean package -Dmaven.test.skip=true
 nohup java -jar app/target/app-0.0.1-SNAPSHOT.jar &

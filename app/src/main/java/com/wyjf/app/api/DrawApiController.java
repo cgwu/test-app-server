@@ -76,10 +76,10 @@ public class DrawApiController {
             for (Draw d : list) {
                 LocalDateTime deadline = d.getStartDate().minus(beforeMins, ChronoUnit.MINUTES);
                 long countdown = 0;
-                if (now.isBefore(deadline)) {
-                    Duration du= Duration.between(now,deadline);
-                    countdown = du.toMillis();
-                }
+//                if (now.isBefore(deadline)) {
+                Duration du = Duration.between(now, deadline);
+                countdown = du.toMillis();
+//                }
                 DrawEx dex = new DrawEx(d, countdown);
                 listEx.add(dex);
             }
@@ -91,14 +91,13 @@ public class DrawApiController {
                 LocalDateTime now = LocalDateTime.now();
                 LocalDateTime deadline = d.getStartDate().minus(beforeMins, ChronoUnit.MINUTES);
                 long countdown = 0;
-                if (now.isBefore(deadline)) {
-                    Duration du= Duration.between(now,deadline);
-                    countdown = du.toMillis();
-                }
+//                if (now.isBefore(deadline)) {
+                Duration du = Duration.between(now, deadline);
+                countdown = du.toMillis();
+//                }
                 DrawEx dex = new DrawEx(d, countdown);
                 return ApiFactory.createResult(dex);
-            }
-            else
+            } else
                 return ApiFactory.fail(2, "无相关记录");
         }
     }
