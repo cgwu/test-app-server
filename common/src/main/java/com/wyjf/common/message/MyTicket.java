@@ -7,16 +7,26 @@ import java.time.LocalDateTime;
  * 用于查询我的票信息
  */
 public class MyTicket {
+    private long tid;
     private String sid;
     private int direction;
     private double amount;
     private String time;
 
-    public MyTicket(String sid, int direction, double amount, String time) {
+    public MyTicket(Long tid, String sid, int direction, double amount, String time) {
+        this.tid = tid;
         this.sid = sid;
         this.direction = direction;
         this.amount = amount;
         this.time = time;
+    }
+
+    public long getTid() {
+        return tid;
+    }
+
+    public void setTid(long tid) {
+        this.tid = tid;
     }
 
     public String getSid() {

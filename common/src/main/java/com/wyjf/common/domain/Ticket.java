@@ -82,6 +82,7 @@ import java.time.LocalDateTime;
                         @ConstructorResult(
                                 targetClass = MyTicket.class,
                                 columns = {
+                                        @ColumnResult(name = "tid", type = Long.class),
                                         @ColumnResult(name = "sid"),
                                         @ColumnResult(name = "direction", type = Integer.class),
                                         @ColumnResult(name = "amount", type = Double.class),
