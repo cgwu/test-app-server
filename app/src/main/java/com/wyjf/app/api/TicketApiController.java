@@ -1,9 +1,14 @@
 package com.wyjf.app.api;
 
+import com.querydsl.core.types.Predicate;
 import com.wyjf.app.service.TicketService;
+import com.wyjf.common.domain.QTicket;
 import com.wyjf.common.domain.Ticket;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.message.ApiCode;
+import com.wyjf.common.message.BasicTicket;
+import com.wyjf.common.message.MyTicket;
+import com.wyjf.common.repository.TicketRepo;
 import com.wyjf.common.repository.UserRepo;
 import com.wyjf.common.util.CommonUtil;
 import io.swagger.annotations.Api;
@@ -11,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/ticket")
@@ -29,6 +36,9 @@ public class TicketApiController {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private TicketRepo ticketRepo;
 
     @RequestMapping(value = {"/buy"}, method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -68,6 +78,50 @@ public class TicketApiController {
 
         Pair<Integer, String> result = ticketService.buy(ticket);
         return ApiFactory.createResult(result.getFirst(), result.getSecond(), null);
+    }
+
+
+    @RequestMapping(value = {"/queryByDraw"}, method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "drawId", value = "盘口ID", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "offset", value = "偏移下标,从0开始", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "length", value = "最大条数", required = true, paramType = "query", dataType = "Int")
+    })
+    @ApiOperation(value = "盘口ticket列表", notes = "查询某盘口ticket列表接口",
+            produces = "application/json")
+    public ApiResult queryByDraw(
+            @RequestParam long drawId,
+            @RequestParam int offset,
+            @RequestParam int length
+    ) {
+        List<BasicTicket> tickets = ticketRepo.findBaseTicket(drawId, offset, length);
+        return ApiFactory.createResult(tickets);
+    }
+
+
+    @RequestMapping(value = {"/queryMime"}, method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "授权码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "drawId", value = "盘口ID", required = true, paramType = "query", dataType = "Long"),
+    })
+    @ApiOperation(value = "我的ticket列表", notes = "查询我的ticket信息列表接口,返回状态码code:\n" +
+            "*  0: 成功\n" +
+            "*  8: 授权码(Token)不存在或已过时",
+            produces = "application/json")
+    public ApiResult queryMime(
+            @RequestParam String token,
+            @RequestParam long drawId
+    ) {
+        User user = userRepo.findByTokenOrTime(token);
+        if (user == null) {
+            return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
+        }
+
+        List<MyTicket> myTickets = ticketRepo.findMyTicket(drawId);
+        return ApiFactory.createResult(myTickets);
+
+//        Predicate predicate = QTicket.ticket.did.eq(drawId).and(QTicket.ticket.uid.eq(user.getUid()));
+//        ticketRepo.findAll(predicate, new Sort(Sort.Direction.DESC, "tid"));
     }
 
 }

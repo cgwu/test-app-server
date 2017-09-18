@@ -37,7 +37,7 @@ public class AccountAlipayController extends BaseController {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        model.setPassbackParams(URLEncoder.encode(body.toString()));;  //描述信息  添加附加数据
+        model.setPassbackParams(URLEncoder.encode(body.toString()));  //描述信息  添加附加数据
         model.setSubject(subject); //商品标题
         model.setOutTradeNo(out_trade_no); //商家订单编号
         model.setTimeoutExpress("30m"); //超时关闭该订单时间

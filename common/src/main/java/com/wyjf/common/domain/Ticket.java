@@ -1,16 +1,96 @@
 package com.wyjf.common.domain;
 
+import com.wyjf.common.message.MyTicket;
+import com.wyjf.common.message.BasicTicket;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
+ * 票
  * Created by Administrator on 2017/9/1.
  */
-@Entity
+
+//@SqlResultSetMappings({
+//        @SqlResultSetMapping(
+//                name = "queryTicketByDrawMap",
+//                entities = {
+////                        @EntityResult
+////                                (
+////                                        entityClass = BasicTicket.class,
+////                                        fields =
+////                                                {
+////                                                        @FieldResult(name = "phone", column = "phone"),
+////                                                        @FieldResult(name = "loc", column = "loc"),
+////                                                        @FieldResult(name = "direction", column = "direction"),
+////                                                        @FieldResult(name = "amount", column = "amount"),
+////                                                        @FieldResult(name = "time", column = "time")
+////                                                }
+////                                )
+//                },
+//                columns = {
+//                        @ColumnResult(name = "phone"),
+//                        @ColumnResult(name = "loc"),
+//                        @ColumnResult(name = "direction"),
+//                        @ColumnResult(name = "amount"),
+//                        @ColumnResult(name = "time")
+//                }
+//        )
+//})
+
 //@NamedStoredProcedureQuery(name = "Ticket.buy", procedureName = "sp_buy_ticket", parameters = {
 //        @StoredProcedureParameter(mode = ParameterMode.IN, name = "a", type = Integer.class),
 //        @StoredProcedureParameter(mode = ParameterMode.IN, name = "b", type = Integer.class),
 //        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "ret", type = Integer.class) })
+
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "queryTicketByDraw", resultSetMapping = "queryTicketByDrawMap",
+                query = "select concat(left(u.phone,3), '****', right(u.phone,4)) phone, \n" +
+                        "(select concat(province,' ',city) as loc from phone_addr where phone_prefix= left(u.phone, 7) limit 1) loc,\n" +
+                        "t.direction, t.amount, DATE_FORMAT(t.buy_time,'%m-%d %T' ) as time from ticket t left join user u on t.uid = u.uid\n" +
+                        "where did = ?\n" +
+                        "order by tid desc\n" +
+                        "limit ?, ?;"
+        ),
+
+        @NamedNativeQuery(name = "queryMine", resultSetMapping = "queryMineMap",
+                query = "select tid, sid, direction,amount, DATE_FORMAT(buy_time,'%m-%d %T' ) as time  from ticket where did = ? order by tid desc;"
+
+        )
+})
+
+
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "queryTicketByDrawMap",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = BasicTicket.class,
+                                columns = {
+                                        @ColumnResult(name = "phone"),
+                                        @ColumnResult(name = "loc"),
+                                        @ColumnResult(name = "direction", type = Integer.class),
+                                        @ColumnResult(name = "amount", type = Double.class),
+                                        @ColumnResult(name = "time")
+                                }
+                        )
+                }),
+
+        @SqlResultSetMapping(
+                name = "queryMineMap",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = MyTicket.class,
+                                columns = {
+                                        @ColumnResult(name = "sid"),
+                                        @ColumnResult(name = "direction", type = Integer.class),
+                                        @ColumnResult(name = "amount", type = Double.class),
+                                        @ColumnResult(name = "time")
+                                }
+                        )
+                })
+})
+@Entity
 public class Ticket {
     @Id
     private long tid;
@@ -57,6 +137,7 @@ public class Ticket {
 
     /**
      * 方向（涨1、跌0）
+     *
      * @return
      */
     public int getDirection() {

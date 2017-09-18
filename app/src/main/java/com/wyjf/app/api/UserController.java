@@ -185,7 +185,9 @@ public class UserController extends BaseController{
             if (user.getPhone().equals(oldPhone)) {
                 user.setPhone(newPhone);
                 userRepo.save(user);
-                return ApiFactory.createResult(0, "修改成功", user);
+                UserInfo userinfo = userInfoRepo.findOne(user.getUid());
+                UserResult userResult = new UserResult(user, userinfo);
+                return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "旧手机号码不匹配", null);
             }
@@ -208,7 +210,9 @@ public class UserController extends BaseController{
             if (user != null) {
                 user.setPasswordLogin(CommonUtil.generatePwd(newPwd));
                 userRepo.save(user);
-                return ApiFactory.createResult(0, "修改成功", user);
+                UserInfo userinfo = userInfoRepo.findOne(user.getUid());
+                UserResult userResult = new UserResult(user, userinfo);
+                return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "用户不存在", null);
             }
@@ -240,7 +244,9 @@ public class UserController extends BaseController{
                 user = userRepo.save(user);
                 logVerifycode.setStatus(1);
                 verfyCodeRepo.save(logVerifycode);
-                return ApiFactory.createResult(0, "修改成功", user);
+                UserInfo userinfo = userInfoRepo.findOne(user.getUid());
+                UserResult userResult = new UserResult(user, userinfo);
+                return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "手机号码不是用户绑定的手机号码", null);
             }

@@ -1,6 +1,7 @@
 package com.wyjf.app.service;
 
 import com.wyjf.common.domain.Ticket;
+import com.wyjf.common.message.BasicTicket;
 import com.wyjf.common.repository.TicketRepo;
 import com.wyjf.common.util.CommonUtil;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/1.
@@ -24,6 +26,9 @@ public class TicketServiceTest {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private TicketRepo ticketRepo;
 
     @Test
     public void testSave() {
@@ -38,6 +43,14 @@ public class TicketServiceTest {
         ticket.setStatus(0);
         Pair<Integer, String> result = ticketService.buy(ticket);
         log.info("测试买票，返回状态码:{},{}", result.getFirst(), result.getSecond());
+    }
+
+    @Test
+    public void testFind() {
+        List<BasicTicket> list= ticketRepo.findBaseTicket(27,0,5);
+        for (BasicTicket t: list) {
+            log.info(t.toString());
+        }
     }
 
 }
