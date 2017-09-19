@@ -117,7 +117,7 @@ public class TicketApiController {
             return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
         }
 
-        List<MyTicket> myTickets = ticketRepo.findMyTicket(drawId);
+        List<MyTicket> myTickets = ticketRepo.findMyTicket(drawId, user.getUid());
         return ApiFactory.createResult(myTickets);
 
 //        Predicate predicate = QTicket.ticket.did.eq(drawId).and(QTicket.ticket.uid.eq(user.getUid()));

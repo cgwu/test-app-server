@@ -54,7 +54,7 @@ import java.time.LocalDateTime;
         ),
 
         @NamedNativeQuery(name = "queryMine", resultSetMapping = "queryMineMap",
-                query = "select tid, sid, direction,amount, DATE_FORMAT(buy_time,'%m-%d %T' ) as time  from ticket where did = ? order by tid desc;"
+                query = "select tid, sid, direction,amount, DATE_FORMAT(buy_time,'%m-%d %T' ) as time from ticket where did = ? and uid = ? order by tid desc;"
 
         )
 })

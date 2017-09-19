@@ -22,6 +22,6 @@ public interface TicketRepo extends JpaRepository<Ticket, Long>, QueryDslPredica
     public List<BasicTicket> findBaseTicket(long drawId, int offset, int length);
 
     @Query(name = "queryMine")
-    public List<MyTicket> findMyTicket(long drawId);
+    public List<MyTicket> findMyTicket(long drawId, long uid);
 
 }
