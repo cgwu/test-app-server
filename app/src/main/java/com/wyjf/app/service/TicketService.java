@@ -91,7 +91,7 @@ public class TicketService {
         //保存日志 log_balance
         LogBalance log = new LogBalance();
         log.setUid(ticket.getUid());
-        log.setAmount(ticket.getAmount());
+        log.setAmount(-ticket.getAmount()); //下注金额日志记为负.
         log.setType(TranType.LOG_WALLET);
         log.setTag(draw.getDrawSeq());
         log.setRefId(saved.getTid());
