@@ -1,5 +1,6 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.OrderService;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.OrderRepo;
 import com.wyjf.common.repository.UserRepo;
@@ -13,6 +14,8 @@ public class BaseController {
     public UserRepo userRepo;
     @Autowired
     public OrderRepo orderRepo;
+    @Autowired
+    public OrderService orderService;
 
 
     /**

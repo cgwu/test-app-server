@@ -7,6 +7,7 @@ import com.wyjf.app.utils.weixinpay.HttpUtil;
 import com.wyjf.app.utils.weixinpay.MD5Util;
 import com.wyjf.app.utils.weixinpay.ResultObject;
 import com.wyjf.app.utils.weixinpay.XmlToJson;
+import com.wyjf.common.domain.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -27,7 +28,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/WeiXinPay")
-public class AccountWeiXinController {
+public class AccountWeiXinController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(AccountWeiXinController.class);
 //    @Autowired
 //    private AccountWalletService accountWalletService;
@@ -190,7 +191,8 @@ public class AccountWeiXinController {
                 map.put("orderNum", (String) out_trade_no.get(0));
                 map.put("consumState", 1);
                 //更新充值业务
-//                accountWalletService.updateAccountOrderState(map);
+                Order order = orderRepo.findByOrderNumber(map.get("orderNum").toString());
+                orderService.userWithdraw(order);
 
                 response.getWriter().write(setXml("SUCCESS", "OK"));
 

@@ -1,6 +1,8 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.StockDataService;
 import com.wyjf.common.repository.StockDataRepo;
+import com.wyjf.common.util.CommonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,6 +28,8 @@ public class StockDataController {
 
     @Autowired
     private StockDataRepo stockDataRepo;
+    @Autowired
+    private StockDataService stockDataService;
 
     @ApiOperation(value = "分时", notes = "分时K线数据接口", produces = "application/json")
     @RequestMapping(value = {"/mh"}, method = RequestMethod.POST)
@@ -69,5 +76,16 @@ public class StockDataController {
     public ApiResult stockdatad(){
         List list = stockDataRepo.findSockDataDay();
         return ApiFactory.createResult(list.get(0));
+    }
+
+    @ApiOperation(value = "分Ctestststststsett", notes = "分时K线数据接口", produces = "application/json")
+    @RequestMapping(value = {"/teststockdatamh"}, method = RequestMethod.POST)
+    @ApiImplicitParams(
+            @ApiImplicitParam(name = "date", value = "日期（格式：2017-09-18 14:00）", required = true, paramType = "query", dataType = "date")
+    )
+    public ApiResult teststockdatamh(@RequestParam String date){
+        Date date1 = CommonUtil.stringToDateTime(date, "yyyy-MM-dd HH:mm");
+        LocalDateTime ldt = LocalDateTime.ofInstant(date1.toInstant(), ZoneId.systemDefault());
+        return ApiFactory.createResult(stockDataService.getData(ldt));
     }
 }

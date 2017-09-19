@@ -79,7 +79,8 @@ public class TicketService {
         userRepo.addBalance(ticket.getUid(), -ticket.getAmount());
 
         //保存票
-        ticketRepo.save(ticket);
+        Ticket saved = ticketRepo.saveAndFlush(ticket);
+
         //累计池
         if (ticket.getDirection() == 1) {
             drawRepo.buyAmountUp(ticket.getDid(), ticket.getAmount());
@@ -91,7 +92,9 @@ public class TicketService {
         LogBalance log = new LogBalance();
         log.setUid(ticket.getUid());
         log.setAmount(ticket.getAmount());
-        log.setType(TranType.BUY);
+        log.setType(TranType.LOG_WALLET);
+        log.setTag(draw.getDrawSeq());
+        log.setRefId(saved.getTid());
         log.setLogTime(ticket.getBuyTime());
         logBalanceRepo.save(log);
 

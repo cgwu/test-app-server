@@ -126,6 +126,9 @@ create table ticket
 alter table ticket comment '票';
 
 
+
+drop index idx_log_balance_uid_type on log_balance;
+
 drop table if exists log_balance;
 
 /*==============================================================*/
@@ -136,12 +139,23 @@ create table log_balance
   lid                  serial not null,
   uid                  bigint not null comment '用户ID',
   amount               decimal(19,2) not null comment '变动金额',
-  type                 int not null comment '1充值，2取款，3下注，4中奖',
+  type                 int not null comment '0云投记录，1充值记录，2提款记录',
+  tag                  int comment '子类型标识(1-5下注盘口类型, 6返现, 7中奖)',
+  ref_id               bigint comment '引用记录ID',
   log_time             datetime not null comment '操作日志时间',
   primary key (lid)
 ) ENGINE=InnoDB;
 
 alter table log_balance comment '用户余额日志表';
+
+/*==============================================================*/
+/* Index: idx_log_balance_uid_type                              */
+/*==============================================================*/
+create index idx_log_balance_uid_type on log_balance
+(
+  uid,
+  type
+);
 
 
 

@@ -94,6 +94,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Ticket {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long tid;
     private String sid;
     private long uid;

@@ -303,8 +303,7 @@ public class UserController extends BaseController{
     })
     @RequestMapping(value = {"/head/{userId}/{times}/head.png"}, method = RequestMethod.GET)
     public void getUserHead(@PathVariable Integer userId, HttpServletResponse response, @PathVariable String times) throws Exception {
-
-        UserInfo userinfo = userInfoRepo.getOne(userId.longValue());
+        UserInfo userinfo = userInfoRepo.findOne(userId.longValue());
         if (userinfo != null) {
             byte[] s = userinfo.getHeadThumb();
             OutputStream outputStream = response.getOutputStream();

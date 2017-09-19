@@ -32,12 +32,14 @@ public class LogApiController {
     @Autowired
     private LogBalanceRepo logBalanceRepo;
 
-    @ApiOperation(value = "交易日志", notes = "查询交易日志列表接口:返回状态码code:\n" +
+    @ApiOperation(value = "交易日志", notes = "查询交易日志列表接口 \n" +
+            "tag:子类型标识(1-5下注盘口类型, 6返现, 7中奖).\n" +
+            "返回状态码code:\n" +
             "0: 成功,\n" +
             "8: 授权码(Token)不存在或已过时", produces = "application/json")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "授权码", required = true, paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "type", value = "交易类型(0全部, 1充值，2提款，3下注，4中奖)", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "type", value = "交易类型(0云投记录，1充值记录，2提款记录)", required = true, paramType = "query", dataType = "Int"),
     })
     @RequestMapping(value = {"/balance"}, method = RequestMethod.POST)
     public ApiResult balance(
@@ -48,12 +50,7 @@ public class LogApiController {
         if (user == null) {
             return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
         }
-        List<LogBalance> list = null;
-        if (type == 0) {
-            list = logBalanceRepo.findByUidOrderByLogTimeDesc(user.getUid());
-        } else {
-            list = logBalanceRepo.findByUidAndTypeOrderByLogTimeDesc(user.getUid(), type);
-        }
+        List<LogBalance> list = logBalanceRepo.findByUidAndTypeOrderByLogTimeDesc(user.getUid(), type);
         return ApiFactory.createResult(list);
     }
 }

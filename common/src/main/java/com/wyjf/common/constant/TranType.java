@@ -7,6 +7,11 @@ package com.wyjf.common.constant;
 public interface TranType {
 
     /**
+     * 0云投记录
+     */
+    public static final int LOG_WALLET = 0;
+
+    /**
      * 存款
      */
     public static final int DEPOSIT = 1;
@@ -15,15 +20,5 @@ public interface TranType {
      * 取款
      */
     public static final int WITHDRAW = 2;
-
-    /**
-     * 买票
-     */
-    public static final int BUY = 3;
-
-    /**
-     * 中奖
-     */
-    public static final int WIN = 4;
 
 }

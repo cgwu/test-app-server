@@ -29,9 +29,19 @@ public class LogBalance {
     private double amount;
 
     /**
-     * 1充值，2取款，3下注，4中奖
+     * 0云投记录，1充值记录，2提款记录
      */
     private int type;
+
+    /**
+     * 子类型标识(1-5下注盘口类型, 6返现, 7中奖)
+     */
+    private Integer tag;
+
+    /**
+     * 引用记录ID
+     */
+    private Long refId;
 
     /**
      * 操作日志时间
@@ -77,5 +87,21 @@ public class LogBalance {
 
     public void setLogTime(LocalDateTime logTime) {
         this.logTime = logTime;
+    }
+
+    public Integer getTag() {
+        return tag;
+    }
+
+    public void setTag(Integer tag) {
+        this.tag = tag;
+    }
+
+    public Long getRefId() {
+        return refId;
+    }
+
+    public void setRefId(Long refId) {
+        this.refId = refId;
     }
 }

@@ -16,7 +16,7 @@ public class StockDataService {
     private StockDataRepo stockDataRepo;
 
     public Double getData(LocalDateTime date){
-        LocalDateTime time = date.plusMinutes(-1);
+        LocalDateTime time = date.plusMinutes(0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String dateStr = time.format(dtf);
         return stockDataRepo.findStockData(dateStr);

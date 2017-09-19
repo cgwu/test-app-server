@@ -65,12 +65,11 @@ public class OrderController extends BaseController{
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
         if(money != null && money > 0.0){
+            Order order = orderRepo.findOne(1L);
+            order.setOrderMoeny(money);
+            order.setUid(userId.longValue());
+            orderService.userWithdraw(order);
             User user = userRepo.findOne(userId.longValue());
-            if(user == null){
-                return ApiFactory.createResult(1, "用户不存在", null);
-            }
-            user.setBalance((CommonUtil.checkEmpty(user.getBalance()) ? money : user.getBalance()+money));
-            userRepo.save(user);
             UserResult userResult = new UserResult(user, null);
             return ApiFactory.createResult(0, "充值成功", userResult);
         }else{

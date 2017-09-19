@@ -88,6 +88,8 @@ public class AccountAlipayController extends BaseController {
                     String amount = params.get("buyer_pay_amount");
                     //商户订单号
                     String out_trade_no = params.get("out_trade_no");
+                    Order order = orderRepo.findByOrderNumber(out_trade_no);
+                    orderService.userWithdraw(order);
                     //支付宝交易号
                     String trade_no = params.get("trade_no");
                     //附加数据
