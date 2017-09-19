@@ -23,6 +23,10 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.javatuples/javatuples -->
         <!--<dependency>
             <groupId>org.javatuples</groupId>

@@ -1,10 +1,9 @@
 package com.wyjf.app.service;
 
-import com.wyjf.common.domain.Draw;
-import com.wyjf.common.domain.SystemParam;
-import com.wyjf.common.domain.Ticket;
-import com.wyjf.common.domain.User;
+import com.wyjf.common.constant.TranType;
+import com.wyjf.common.domain.*;
 import com.wyjf.common.repository.DrawRepo;
+import com.wyjf.common.repository.LogBalanceRepo;
 import com.wyjf.common.repository.TicketRepo;
 import com.wyjf.common.repository.UserRepo;
 import org.slf4j.Logger;
@@ -28,10 +27,15 @@ public class TicketService {
 
     @Autowired
     private UserRepo userRepo;
+
     @Autowired
     private TicketRepo ticketRepo;
+
     @Autowired
     private DrawRepo drawRepo;
+
+    @Autowired
+    private LogBalanceRepo logBalanceRepo;
 
     /**
      * 投票（涨、跌）
@@ -82,7 +86,14 @@ public class TicketService {
         } else {
             drawRepo.buyAmountDown(ticket.getDid(), ticket.getAmount());
         }
+
         //保存日志 log_balance
+        LogBalance log = new LogBalance();
+        log.setUid(ticket.getUid());
+        log.setAmount(ticket.getAmount());
+        log.setType(TranType.BUY);
+        log.setLogTime(ticket.getBuyTime());
+        logBalanceRepo.save(log);
 
         return Pair.of(0, "成功");
     }
