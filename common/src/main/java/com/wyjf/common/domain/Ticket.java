@@ -1,7 +1,7 @@
 package com.wyjf.common.domain;
 
-import com.wyjf.common.message.MyTicket;
 import com.wyjf.common.message.BasicTicket;
+import com.wyjf.common.message.MyTicket;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -56,9 +56,10 @@ import java.time.LocalDateTime;
         @NamedNativeQuery(name = "queryMine", resultSetMapping = "queryMineMap",
                 query = "select tid, sid, direction,amount, DATE_FORMAT(buy_time,'%m-%d %T' ) as time from ticket where did = ? and uid = ? order by tid desc;"
 
-        )
-})
+        ),
 
+
+})
 
 @SqlResultSetMappings({
         @SqlResultSetMapping(
@@ -89,8 +90,10 @@ import java.time.LocalDateTime;
                                         @ColumnResult(name = "time")
                                 }
                         )
-                })
+                }),
+
 })
+
 @Entity
 public class Ticket {
     @Id

@@ -1,18 +1,57 @@
 package com.wyjf.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wyjf.common.message.LogBalanceEx;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Created by Administrator on 2017/9/19.
- */
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "queryLogBalanceEx", resultSetMapping = "queryLogBalanceExMap",
+                query = "select b.lid , b.uid, b.amount, b.`type`, b.tag, b.ref_id as refId, b.log_time as logTime, d.draw_day as drawDay " +
+                        "from log_balance b left join ticket t on b.ref_id = t.tid left join draw d on t.did = d.did\n" +
+                        "where b.uid = ? and b.type= ? " +
+                        "order by lid desc limit ?, ?"
+        ),
+})
+
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "queryLogBalanceExMap",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = LogBalanceEx.class,
+                                columns = {
+                                        @ColumnResult(name = "lid", type = Long.class),
+                                        @ColumnResult(name = "uid", type = Long.class),
+                                        @ColumnResult(name = "amount", type = Double.class),
+                                        @ColumnResult(name = "type", type = Integer.class),
+                                        @ColumnResult(name = "tag", type = Integer.class),
+                                        @ColumnResult(name = "refId", type = Long.class),
+                                        @ColumnResult(name = "logTime", type = LocalDateTime.class),
+                                        @ColumnResult(name = "drawDay", type = LocalDate.class),
+                                }
+                        )
+                }),
+})
+
+
 @Entity
 public class LogBalance {
+
+    public LogBalance() {
+    }
+
+    public LogBalance(long lid, long uid, double amount, int type, Integer tag, Long refId, LocalDateTime logTime) {
+        this.lid = lid;
+        this.uid = uid;
+        this.amount = amount;
+        this.type = type;
+        this.tag = tag;
+        this.refId = refId;
+        this.logTime = logTime;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +85,7 @@ public class LogBalance {
     /**
      * 操作日志时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime logTime;
 
     public Long getLid() {
@@ -103,5 +142,18 @@ public class LogBalance {
 
     public void setRefId(Long refId) {
         this.refId = refId;
+    }
+
+    @Override
+    public String toString() {
+        return "LogBalance{" +
+                "lid=" + lid +
+                ", uid=" + uid +
+                ", amount=" + amount +
+                ", type=" + type +
+                ", tag=" + tag +
+                ", refId=" + refId +
+                ", logTime=" + logTime +
+                '}';
     }
 }

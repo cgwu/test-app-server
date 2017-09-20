@@ -1,14 +1,18 @@
 package com.wyjf.app.api;
 
+import com.wyjf.common.constant.TranType;
 import com.wyjf.common.domain.LogBalance;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.message.ApiCode;
+import com.wyjf.common.message.LogBalanceEx;
 import com.wyjf.common.repository.LogBalanceRepo;
 import com.wyjf.common.repository.UserRepo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +29,7 @@ import java.util.List;
 @RequestMapping(value = "/api/log")
 @Api(description = "日志相关操作")
 public class LogApiController {
+    private static final Logger log = LoggerFactory.getLogger(LogApiController.class);
 
     @Autowired
     private UserRepo userRepo;
@@ -40,17 +45,31 @@ public class LogApiController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "授权码", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "type", value = "交易类型(0云投记录，1充值记录，2提款记录)", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "offset", value = "偏移下标,从0开始", required = false, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "length", value = "最大条数", required = false, paramType = "query", dataType = "Int")
     })
     @RequestMapping(value = {"/balance"}, method = RequestMethod.POST)
     public ApiResult balance(
             @RequestParam String token,
-            @RequestParam int type
+            @RequestParam int type,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer length
     ) {
         User user = userRepo.findByTokenOrTime(token);
         if (user == null) {
             return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
         }
-        List<LogBalance> list = logBalanceRepo.findByUidAndTypeOrderByLogTimeDesc(user.getUid(), type);
-        return ApiFactory.createResult(list);
+        if (type == TranType.LOG_WALLET) {
+            int ioffset = 0;
+            if (offset != null) ioffset = offset.intValue();
+            int ilength = 10;
+            if (length != null) ilength = length.intValue();
+            log.info("uid:{},type:{},offset:{},length:{}", user.getUid(), type, ioffset, ilength);
+            List<LogBalanceEx> list = logBalanceRepo.findLogBalanceEx(user.getUid(), type, ioffset, ilength);
+            return ApiFactory.createResult(list);
+        } else {
+            List<LogBalance> list = logBalanceRepo.findByUidAndTypeOrderByLogTimeDesc(user.getUid(), type);
+            return ApiFactory.createResult(list);
+        }
     }
 }

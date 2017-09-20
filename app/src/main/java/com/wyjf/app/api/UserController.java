@@ -362,6 +362,28 @@ public class UserController extends BaseController{
         return ApiFactory.createResult(0, "添加成功", bankCardRepo.findByUid(userId.longValue()));
     }
 
+    @ApiOperation(value = "解绑银行卡（需传token）", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "cardId", value = "银行卡信息ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userUnBindBankInfo"}, method = RequestMethod.POST)
+    public ApiResult userUnBindBankInfo(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token){
+
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        BankCard bankCard = bankCardRepo.findOne(cardId.longValue());
+        if(bankCard != null){
+            bankCardRepo.delete(bankCard);
+            return ApiFactory.createResult(0, "解绑成功", null);
+        }else{
+            return ApiFactory.createResult(1, "银行卡不存在", null);
+        }
+    }
+
 
 
 }

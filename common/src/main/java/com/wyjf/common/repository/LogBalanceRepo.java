@@ -1,7 +1,9 @@
 package com.wyjf.common.repository;
 
 import com.wyjf.common.domain.LogBalance;
+import com.wyjf.common.message.LogBalanceEx;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -13,5 +15,8 @@ public interface LogBalanceRepo extends JpaRepository<LogBalance, Long> {
     public List<LogBalance> findByUidOrderByLogTimeDesc(long uid);
 
     public List<LogBalance> findByUidAndTypeOrderByLogTimeDesc(long uid, int type);
+
+    @Query(name = "queryLogBalanceEx")
+    public List<LogBalanceEx> findLogBalanceEx(long uid, int type, int offset, int length);
 
 }
