@@ -1,6 +1,8 @@
 打包命令: $ mvn clean package -Dmaven.test.skip=true
 nohup mvn spring-boot:run &
 
+private static final Logger log = LoggerFactory.getLogger(.class);
+
 mvn install:install-file -Dfile=alipay-sdk-java20170829142630.jar -DgroupId=com.alipay -DartifactId=alipay-sdk-java -Dversion=20170829142630 -Dpackaging=jar
 
 common模块：  公共类

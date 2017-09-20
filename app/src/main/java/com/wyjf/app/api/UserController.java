@@ -1,7 +1,9 @@
 package com.wyjf.app.api;
 
+import com.wyjf.common.domain.BankCard;
 import com.wyjf.common.domain.UserInfo;
 import com.wyjf.common.message.UserResult;
+import com.wyjf.common.repository.BankCardRepo;
 import com.wyjf.common.repository.UserInfoRepo;
 import com.wyjf.common.util.CommonUtil;
 import com.wyjf.common.domain.LogVerifycode;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -33,6 +36,8 @@ public class UserController extends BaseController{
     private LogVerifyCodeRepo verfyCodeRepo;
     @Autowired
     private UserInfoRepo userInfoRepo;
+    @Autowired
+    private BankCardRepo bankCardRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -310,5 +315,53 @@ public class UserController extends BaseController{
             outputStream.write(s);
         }
     }
+
+
+    @ApiOperation(value = "绑定银行卡（需传token）", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "bankName", value = "银行名", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "cardNum", value = "卡号", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "openBank", value = "开户行", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "realName", value = "真实姓名", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userBindBankInfo"}, method = RequestMethod.POST)
+    public ApiResult userBindBankInfo(@RequestParam Integer userId, @RequestParam String token, @RequestParam String bankName, @RequestParam String cardNum, @RequestParam String realName, @RequestParam String openBank){
+
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        User user = userRepo.findOne(userId.longValue());
+        if(user.getPasswordTrade() == null){
+            return ApiFactory.createResult(1, "请先设置提现密码", null);
+        }
+        BankCard bankCard = new BankCard();
+        bankCard.setUid(userId.longValue());
+        bankCard.setCardNumber(cardNum);
+        bankCard.setBank(bankName);
+        bankCard.setRealName(realName);
+        bankCard.setOpenBank(openBank);
+        bankCardRepo.save(bankCard);
+        return ApiFactory.createResult(0, "添加成功", null);
+    }
+
+    @ApiOperation(value = "用户银行卡（需传token）", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userBankInfo"}, method = RequestMethod.POST)
+    public ApiResult userBankInfo(@RequestParam Integer userId, @RequestParam String token){
+
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        return ApiFactory.createResult(0, "添加成功", bankCardRepo.findByUid(userId.longValue()));
+    }
+
+
 
 }

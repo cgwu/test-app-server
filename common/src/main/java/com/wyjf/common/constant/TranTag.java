@@ -5,7 +5,7 @@ package com.wyjf.common.constant;
  *
  * Created by Administrator on 2017/9/19.
  */
-public class TranTag {
+public interface TranTag {
     /**
      * 返现
      */
