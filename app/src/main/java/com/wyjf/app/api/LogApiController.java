@@ -74,7 +74,6 @@ public class LogApiController {
             List<LogBalanceEx> list = logBalanceRepo.findLogBalanceEx(user.getUid(), type, ioffset, ilength);
             return ApiFactory.createResult(list);
         } else {
-            log.info("这里");
             Predicate predicate = QLogBalance.logBalance.uid.eq(user.getUid())
                     .and(QLogBalance.logBalance.type.eq(type));
             PageRequest preq = new PageRequest(ioffset / ilength, ilength, Sort.Direction.DESC, "lid");
