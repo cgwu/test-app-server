@@ -1,7 +1,9 @@
 package com.wyjf.app.api;
 
+import com.querydsl.core.types.Predicate;
 import com.wyjf.common.constant.TranType;
 import com.wyjf.common.domain.LogBalance;
+import com.wyjf.common.domain.QLogBalance;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.message.ApiCode;
 import com.wyjf.common.message.LogBalanceEx;
@@ -14,6 +16,9 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,17 +64,22 @@ public class LogApiController {
         if (user == null) {
             return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
         }
+        int ioffset = 0;
+        if (offset != null) ioffset = offset.intValue();
+        int ilength = 10;
+        if (length != null && 0 != length.intValue()) ilength = length.intValue();
+        log.info("uid:{},type:{},offset:{},length:{}", user.getUid(), type, ioffset, ilength);
+
         if (type == TranType.LOG_WALLET) {
-            int ioffset = 0;
-            if (offset != null) ioffset = offset.intValue();
-            int ilength = 10;
-            if (length != null) ilength = length.intValue();
-            log.info("uid:{},type:{},offset:{},length:{}", user.getUid(), type, ioffset, ilength);
             List<LogBalanceEx> list = logBalanceRepo.findLogBalanceEx(user.getUid(), type, ioffset, ilength);
             return ApiFactory.createResult(list);
         } else {
-            List<LogBalance> list = logBalanceRepo.findByUidAndTypeOrderByLogTimeDesc(user.getUid(), type);
-            return ApiFactory.createResult(list);
+            log.info("这里");
+            Predicate predicate = QLogBalance.logBalance.uid.eq(user.getUid())
+                    .and(QLogBalance.logBalance.type.eq(type));
+            PageRequest preq = new PageRequest(ioffset / ilength, ilength, Sort.Direction.DESC, "lid");
+            Page<LogBalance> list = logBalanceRepo.findAll(predicate, preq);
+            return ApiFactory.createResult(list.getContent());
         }
     }
 }

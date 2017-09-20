@@ -4,13 +4,14 @@ import com.wyjf.common.domain.LogBalance;
 import com.wyjf.common.message.LogBalanceEx;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/1.
  */
-public interface LogBalanceRepo extends JpaRepository<LogBalance, Long> {
+public interface LogBalanceRepo extends JpaRepository<LogBalance, Long>,QueryDslPredicateExecutor<LogBalance> {
 
     public List<LogBalance> findByUidOrderByLogTimeDesc(long uid);
 
