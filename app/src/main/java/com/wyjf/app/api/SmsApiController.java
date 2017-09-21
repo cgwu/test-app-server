@@ -1,5 +1,6 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.SmsService;
 import com.wyjf.common.domain.LogBalance;
 import com.wyjf.common.domain.User;
 import com.wyjf.common.message.ApiCode;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,12 +35,15 @@ public class SmsApiController {
     private static final Logger log = LoggerFactory.getLogger(SmsApiController.class);
 
     @Autowired
+    private SmsService smsService;
+
+    @Autowired
     private UserRepo userRepo;
 
     @Autowired
     private LogBalanceRepo logBalanceRepo;
 
-    @ApiOperation(value = "发送短信", notes = "发送短信", produces = "application/json")
+    @ApiOperation(value = "发送短信", notes = "发送短信(该接口仅用于测试,发送内容需要匹配模板才能发送成功)", produces = "application/json")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "msg", value = "信息内容", required = true, paramType = "query", dataType = "String"),
@@ -48,11 +53,12 @@ public class SmsApiController {
             @RequestParam String phone,
             @RequestParam String msg
     ) {
+        /*
         YunpianClient clnt = new YunpianClient("a0fced221849f75ce444c85ed5203d90").init();
 
         //修改账户信息API
         Map<String, String> param = clnt.newParam(2);
-        param.put(YunpianClient.MOBILE, "18818696521");
+        param.put(YunpianClient.MOBILE, "188xxx");
         param.put(YunpianClient.TEXT, "【云投网】您的验证码是5678");
         Result<SmsSingleSend> r = clnt.sms().single_send(param);
         //获取返回结果，返回码:r.getCode(),返回码描述:r.getMsg(),API结果:r.getData(),其他说明:r.getDetail(),调用异常:r.getThrowable()
@@ -62,7 +68,9 @@ public class SmsApiController {
 
         //最后释放client
         clnt.close();
-
         return ApiFactory.createResult(r);
+        */
+        Pair<Integer, String> p = smsService.send(phone, msg);
+        return ApiFactory.createResult(p.getFirst(), p.getSecond(), "");
     }
 }

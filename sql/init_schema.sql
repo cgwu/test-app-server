@@ -162,17 +162,33 @@ create index idx_log_balance_uid_type on log_balance
 /*==============================================================*/
 /* Table: ticket        充值订单表                               */
 /*==============================================================*/
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order` (
-  `oid`             bigint(20) NOT NULL comment '自增ID',
-  `order_number`    varchar(32) DEFAULT NULL comment '订单编号',
-  `order_status`    int(1) DEFAULT 0 comment '订单状态0未支付，1已支付',
-  `uid`             bigint(20) DEFAULT NULL comment '会员ID',
-  `order_moeny`      decimal(19,2) DEFAULT NULL comment '支付金额',
-  `order_type`      int(1) DEFAULT 0 comment '订单类型0微信，1支付宝',
-  `create_time`     datetime DEFAULT NULL comment '创建时间',
-  `pay_time`        datetime DEFAULT NULL comment '支付时间',
-  `remark`          varchar(128) DEFAULT NULL comment '备注',
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `oid`             bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `order_number`    varchar(32) DEFAULT NULL COMMENT '订单编号',
+  `order_status`    int(1) DEFAULT 0 COMMENT '订单状态0未支付，1已支付',
+  `uid`             bigint(20) DEFAULT NULL COMMENT '会员ID',
+  `order_moeny`     decimal(19,2) DEFAULT NULL COMMENT '支付金额',
+  `order_type`      int(1) DEFAULT 0 COMMENT '订单类型0微信，1支付宝',
+  `create_time`     datetime DEFAULT NULL COMMENT '创建时间',
+  `pay_time`        datetime DEFAULT NULL COMMENT '支付时间',
+  `remark`          varchar(128) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`oid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*==============================================================*/
+/* Table: withdraw        提现申请表                               */
+/*==============================================================*/
+DROP TABLE IF EXISTS `withdraw`;
+CREATE TABLE `withdraw` (
+  `id`                  bigint(20) NOT NULL AUTO_INCREMENT,
+  `uid`                 bigint(20) NOT NULL COMMENT '用户ID',
+  `bcid`                bigint(20) DEFAULT NULL COMMENT '用户ID',
+  `money`               decimal(19,2) DEFAULT NULL COMMENT '提现金额',
+  `create_time`         datetime DEFAULT NULL COMMENT '提交时间',
+  `handing_time`        datetime DEFAULT NULL COMMENT '处理时间',
+  `status`              int(1) DEFAULT NULL COMMENT '状态（0未审核，1审核成功，2审核失败）',
+  `remark`              varchar(256) DEFAULT '' COMMENT '审核不成功备注',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 

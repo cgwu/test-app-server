@@ -2,7 +2,6 @@ package com.wyjf.common.domain;
 
 import com.wyjf.common.constant.OrderStatus;
 import com.wyjf.common.util.CommonUtil;
-import org.springframework.cglib.core.Local;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

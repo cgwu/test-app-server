@@ -91,9 +91,17 @@ public class TestDateTime {
 //        Duration du = Duration.ofMillis(123);
         LocalDateTime ldt = now.minus(123, ChronoUnit.MILLIS);
 //        Period.between()
-        Duration du= Duration.between(ldt,now);
+        Duration du = Duration.between(ldt, now);
         Long countdown = du.toMillis();
-        log.info("倒数:{}",countdown.toString());
+        log.info("倒数:{}", countdown.toString());
 
+    }
+
+    @Test
+    public void testInstantDiff() {
+        Instant ins = Instant.now().minusSeconds(60 * 2);
+        log.info(ins.toString());
+        Duration du = Duration.between(ins, Instant.now());
+        log.info("duration:{}", du.toMinutes());
     }
 }

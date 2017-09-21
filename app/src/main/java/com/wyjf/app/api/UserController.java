@@ -1,26 +1,25 @@
 package com.wyjf.app.api;
 
-import com.wyjf.common.domain.BankCard;
-import com.wyjf.common.domain.UserInfo;
+import com.wyjf.app.service.SmsService;
+import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
 import com.wyjf.common.repository.BankCardRepo;
-import com.wyjf.common.repository.UserInfoRepo;
-import com.wyjf.common.util.CommonUtil;
-import com.wyjf.common.domain.LogVerifycode;
-import com.wyjf.common.domain.User;
 import com.wyjf.common.repository.LogVerifyCodeRepo;
-import com.wyjf.common.repository.UserRepo;
+import com.wyjf.common.repository.UserInfoRepo;
+import com.wyjf.common.repository.WithDrawRepo;
+import com.wyjf.common.util.CommonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -30,7 +29,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/user")
 @Api(description = "用户个人信息接口")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
+
+    @Autowired
+    private SmsService smsService;
 
     @Autowired
     private LogVerifyCodeRepo verfyCodeRepo;
@@ -38,6 +40,8 @@ public class UserController extends BaseController{
     private UserInfoRepo userInfoRepo;
     @Autowired
     private BankCardRepo bankCardRepo;
+    @Autowired
+    private WithDrawRepo withDrawRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -130,14 +134,30 @@ public class UserController extends BaseController{
         //获取该电话号码10分钟之内是否存在有效的验证码
         LogVerifycode oldLogVerifycode = verfyCodeRepo.findByPhoneExist(phone);
         if (oldLogVerifycode != null && oldLogVerifycode.getId() != null) {
-            return ApiFactory.createResult(0, "获取验证码成功", oldLogVerifycode);
+//            Duration du = Duration.between(oldLogVerifycode.getCreateTime().toInstant(), Instant.now());
+//            if (du.toMillis() <= 60 * 1000) {
+//                return ApiFactory.createResult(2, "短信发送至该手机号码过于频繁，请于1分钟之后重试", oldLogVerifycode);
+//            }
+            Pair<Integer, String> result = smsService.send(phone, "【新益投】您的验证码是" + oldLogVerifycode.getVerifycode());
+            if (result.getFirst() == 0) {
+                oldLogVerifycode.setCreateTime(new Date());
+                verfyCodeRepo.save(oldLogVerifycode);   //更新最后发送时间
+                return ApiFactory.createResult(0, "获取验证码成功", "");
+            } else {
+                return ApiFactory.createResult(result.getFirst(), result.getSecond(), "");
+            }
         }
         //生产新的验证码
         String verfycode = CommonUtil.getVerifyCode();
         LogVerifycode v = new LogVerifycode(phone, verfycode);
         v = verfyCodeRepo.save(v);
         if (v.getId() != null) {
-            return ApiFactory.createResult(0, "获取验证码成功", v);
+            Pair<Integer, String> result = smsService.send(phone, "【新益投】您的验证码是" + v.getVerifycode());
+            if (result.getFirst() == 0) {
+                return ApiFactory.createResult(0, "获取验证码成功", "");
+            } else {
+                return ApiFactory.createResult(result.getFirst(), result.getSecond(), v);
+            }
         } else {
             return ApiFactory.createResult(1, "获取验证码失败", null);
         }
@@ -327,14 +347,14 @@ public class UserController extends BaseController{
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = {"/userBindBankInfo"}, method = RequestMethod.POST)
-    public ApiResult userBindBankInfo(@RequestParam Integer userId, @RequestParam String token, @RequestParam String bankName, @RequestParam String cardNum, @RequestParam String realName, @RequestParam String openBank){
+    public ApiResult userBindBankInfo(@RequestParam Integer userId, @RequestParam String token, @RequestParam String bankName, @RequestParam String cardNum, @RequestParam String realName, @RequestParam String openBank) {
 
         if (!checkToken(token)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
         User user = userRepo.findOne(userId.longValue());
-        if(user.getPasswordTrade() == null){
+        if (user.getPasswordTrade() == null) {
             return ApiFactory.createResult(1, "请先设置提现密码", null);
         }
         BankCard bankCard = new BankCard();
@@ -353,7 +373,7 @@ public class UserController extends BaseController{
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = {"/userBankInfo"}, method = RequestMethod.POST)
-    public ApiResult userBankInfo(@RequestParam Integer userId, @RequestParam String token){
+    public ApiResult userBankInfo(@RequestParam Integer userId, @RequestParam String token) {
 
         if (!checkToken(token)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
@@ -369,18 +389,55 @@ public class UserController extends BaseController{
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = {"/userUnBindBankInfo"}, method = RequestMethod.POST)
-    public ApiResult userUnBindBankInfo(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token){
+    public ApiResult userUnBindBankInfo(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token) {
 
         if (!checkToken(token)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
         BankCard bankCard = bankCardRepo.findOne(cardId.longValue());
-        if(bankCard != null){
+        if (bankCard != null) {
             bankCardRepo.delete(bankCard);
             return ApiFactory.createResult(0, "解绑成功", null);
-        }else{
+        } else {
             return ApiFactory.createResult(1, "银行卡不存在", null);
+        }
+    }
+
+
+    @ApiOperation(value = "提现申请（需传token）", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "cardId", value = "银行卡信息ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "money", value = "提现金额", required = true, paramType = "query", dataType = "Double"),
+            @ApiImplicitParam(name = "passwordTrade", value = "提现密码", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userWithRrawCommit"}, method = RequestMethod.POST)
+    public ApiResult userWithRrawCommit(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token, @RequestParam Double money, @RequestParam String passwordTrade){
+
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        User user = userRepo.findOne(userId.longValue());
+        if(user != null){
+            if(user.getPasswordTrade() != null && user.getPasswordTrade().equals(CommonUtil.generatePwd(passwordTrade))){
+                if(user.getBalance() >= money){
+                    WithDraw withDraw = new WithDraw();
+                    withDraw.setUid(user.getUid());
+                    withDraw.setBcid(cardId.longValue());
+                    withDraw.setMoney(money);
+                    withDrawRepo.save(withDraw);
+                    return ApiFactory.createResult(0, "提交成功，等待审核", null);
+                }else{
+                    return ApiFactory.createResult(1, "云币不足", null);
+                }
+            }else{
+                return ApiFactory.createResult(1, "提现密码错误", null);
+            }
+        }else{
+            return ApiFactory.createResult(1, "用户不存在", null);
         }
     }
 
