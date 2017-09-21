@@ -1,14 +1,8 @@
 package com.wyjf.app.api;
 
-import com.wyjf.app.service.SmsService;
-import com.wyjf.common.domain.LogBalance;
-import com.wyjf.common.domain.User;
-import com.wyjf.common.message.ApiCode;
+import com.wyjf.app.share.SmsSender;
 import com.wyjf.common.repository.LogBalanceRepo;
 import com.wyjf.common.repository.UserRepo;
-import com.yunpian.sdk.YunpianClient;
-import com.yunpian.sdk.model.Result;
-import com.yunpian.sdk.model.SmsSingleSend;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * 2017/8/22.
  */
@@ -35,7 +26,7 @@ public class SmsApiController {
     private static final Logger log = LoggerFactory.getLogger(SmsApiController.class);
 
     @Autowired
-    private SmsService smsService;
+    private SmsSender smsService;
 
     @Autowired
     private UserRepo userRepo;

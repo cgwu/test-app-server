@@ -1,5 +1,6 @@
 package com.wyjf.app.service;
 
+import com.wyjf.app.share.SmsSender;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
 import com.yunpian.sdk.model.SmsSingleSend;
@@ -18,11 +19,11 @@ import java.util.Map;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestSMS {
-    private static final Logger log = LoggerFactory.getLogger(TestSMS.class);
+public class SMSTest {
+    private static final Logger log = LoggerFactory.getLogger(SMSTest.class);
 
     @Autowired
-    private SmsService smsService;
+    private SmsSender smsService;
 
     @Test
     public void testSend() {
@@ -44,7 +45,7 @@ public class TestSMS {
 
     @Test
     public void testSendUseService() {
-        smsService.send("188xxx","【新益投】您的验证码是987654");
+        smsService.send("18818696521","【新益投】您的验证码是987654");
     }
 
 }

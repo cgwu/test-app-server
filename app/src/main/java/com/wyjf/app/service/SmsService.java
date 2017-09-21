@@ -1,5 +1,7 @@
 package com.wyjf.app.service;
 
+import com.wyjf.app.share.Release;
+import com.wyjf.app.share.SmsSender;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
 import com.yunpian.sdk.model.SmsSingleSend;
@@ -16,7 +18,8 @@ import java.util.Map;
  * Created by Administrator on 2017/9/21.
  */
 @Service
-public class SmsService {
+@Release
+public class SmsService implements SmsSender {
     private static final Logger log = LoggerFactory.getLogger(SmsService.class);
 
     private YunpianClient clnt;

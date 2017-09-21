@@ -1,6 +1,6 @@
 package com.wyjf.app.api;
 
-import com.wyjf.app.service.SmsService;
+import com.wyjf.app.share.SmsSender;
 import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
 import com.wyjf.common.repository.BankCardRepo;
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class UserController extends BaseController {
 
     @Autowired
-    private SmsService smsService;
+    private SmsSender smsService;
 
     @Autowired
     private LogVerifyCodeRepo verfyCodeRepo;

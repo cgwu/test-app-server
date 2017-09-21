@@ -104,6 +104,30 @@ create unique index idx_draw_day_seq on draw
 );
 
 
+
+drop table if exists draw_result;
+
+/*==============================================================*/
+/* Table: draw_result                                           */
+/*==============================================================*/
+create table draw_result
+(
+  did                  bigint unsigned not null comment '盘口ID',
+  start_price          decimal(19,2) not null comment '开始指数',
+  end_price            decimal(19,2) not null comment '结束指数',
+  result               int not null comment '1涨,0跌',
+  platform_percent     decimal(19,2) not null comment '平台收益(百分比)',
+  platform_amount      decimal(19,2) not null comment '平台收益金额',
+  prize_amount         decimal(19,2) not null comment '用户剩余奖池(中奖方总额 - 平台收益金额)',
+  process_time         datetime not null comment '结账时间',
+  primary key (did)
+) ENGINE=InnoDB;
+
+alter table draw_result comment '盘口结果表';
+
+
+
+
 drop table if exists ticket;
 
 /*==============================================================*/
@@ -124,6 +148,25 @@ create table ticket
 ) ENGINE=InnoDB;
 
 alter table ticket comment '票';
+
+
+
+drop table if exists ticket_result_win;
+
+/*==============================================================*/
+/* Table: ticket_result_win                                     */
+/*==============================================================*/
+create table ticket_result_win
+(
+  tid                  bigint not null,
+  win_percent          decimal(19,6) not null comment '中奖百分比(该票金额/赢方总额)',
+  win_amount           decimal(19,2) not null comment '中奖金额',
+  primary key (tid)
+) ENGINE=InnoDB;
+
+alter table ticket_result_win comment '票结算表(只含中奖票)';
+
+
 
 
 
