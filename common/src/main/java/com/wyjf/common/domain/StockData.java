@@ -33,6 +33,22 @@ public class StockData {
     private Double yestclose;
     private Double turnover;
 
+    public StockData(String[] strs){
+//        1：”27.55″，今日开盘价；
+//        2：”27.25″，昨日收盘价；
+//        3：”26.91″，当前价格；
+//        4：”27.55″，今日最高价；
+//        5：”26.20″，今日最低价；
+        this.code = "1399300";
+        this.high = new Double(strs[4]);
+        this.price = new Double(strs[3]);
+        this.low = new Double(strs[5]);
+        this.yestclose = new Double(strs[2]);
+        this.open = new Double(strs[1]);
+        this.timeTime = CommonUtil.stringToDateTime(strs[30]+" "+strs[31], "yyyy-MM-dd HH:mm:ss");
+        this.turnover = new Double(strs[9]);
+    }
+
 
     public StockData(JSONObject json) throws Exception {
         code = json.getString("code");
