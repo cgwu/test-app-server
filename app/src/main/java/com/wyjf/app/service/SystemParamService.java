@@ -51,4 +51,21 @@ public class SystemParamService {
         return beforeBuyMins;
     }
 
+    /**
+     * 获取平台收益百分比
+     * @return
+     */
+    public double getPlatformProfitPercent() {
+        double percent = 0;
+        try {
+            SystemParam param = repo.findByDataKey("INT_PlatformPercent");
+            if (param != null) {
+                percent = Double.parseDouble(param.getDataVal());
+            }
+        } catch (Exception e) {
+            log.error("Find INT_PlatformPercent Exception: {}", e.getMessage());
+        }
+        return percent;
+    }
+
 }

@@ -21,37 +21,23 @@ public class Draw {
     private int drawSeq;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private int amountUp;
-    private int amountDown;
+    private double amountUp;
+    private double amountDown;
     private int status;
 
-//    public Draw() {
-//    }
-//
-//    public Draw(Long did, LocalDate drawDay, int drawSeq, LocalDateTime startDate, LocalDateTime endDate, int amountUp, int amountDown, int status) {
-//        this.did = did;
-//        this.drawDay = drawDay;
-//        this.drawSeq = drawSeq;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.amountUp = amountUp;
-//        this.amountDown = amountDown;
-//        this.status = status;
-//    }
-
-    public int getAmountUp() {
+    public double getAmountUp() {
         return amountUp;
     }
 
-    public void setAmountUp(int amountUp) {
+    public void setAmountUp(double amountUp) {
         this.amountUp = amountUp;
     }
 
-    public int getAmountDown() {
+    public double getAmountDown() {
         return amountDown;
     }
 
-    public void setAmountDown(int amountDown) {
+    public void setAmountDown(double amountDown) {
         this.amountDown = amountDown;
     }
 

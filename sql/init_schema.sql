@@ -158,13 +158,15 @@ drop table if exists ticket_result_win;
 /*==============================================================*/
 create table ticket_result_win
 (
-  tid                  bigint not null,
+  tid                  bigint  not null comment '票ID',
+  did                  bigint unsigned not null comment '盘口ID',
   win_percent          decimal(19,6) not null comment '中奖百分比(该票金额/赢方总额)',
   win_amount           decimal(19,2) not null comment '中奖金额',
   primary key (tid)
 ) ENGINE=InnoDB;
 
 alter table ticket_result_win comment '票结算表(只含中奖票)';
+
 
 
 
