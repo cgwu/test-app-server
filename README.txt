@@ -11,7 +11,7 @@ job模块:      自动任务
 
 #ref: http://blog.csdn.net/catoop/article/details/50588851
 通过参数指定一个外部配置文件，以 demo.jar 为例，方法如下：
-java -jar demo.jar --spring.config.location=/opt/config/application.properties
+java -jar demo.jar --spring.config.location=/opt/config/application.properties --spring.profiles.active=release
 
 notes:
 <th:block th:text="${application.static}"/>
