@@ -19,6 +19,9 @@ public class StockDataService {
         LocalDateTime time = date.plusMinutes(0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String dateStr = time.format(dtf);
+        if(date.getHour() == 9){
+            return stockDataRepo.findStockOpen(dateStr);
+        }
         return stockDataRepo.findStockData(dateStr);
     }
 }

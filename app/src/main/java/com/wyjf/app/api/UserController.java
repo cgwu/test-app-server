@@ -190,11 +190,35 @@ public class UserController extends BaseController {
         }
     }
 
+    @ApiOperation(value = "获取个人信息（需传token）", notes = "使用密码验证操作人接口，0：验证成功，1：密码错误", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户Token", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "pwd", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/getCheckUserByPwd"}, method = RequestMethod.POST)
+    public ApiResult getCheckUserByPwd(@RequestParam Integer userId, @RequestParam String token, @RequestParam String pwd) {
 
-    @ApiOperation(value = "更新手机号码（需传token）", notes = "使用用户ID更新手机号码接口", produces = "application/json")
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        User user = userRepo.findOne(userId.longValue());
+        if (user != null && user.getPasswordLogin().equals(CommonUtil.generatePwd(pwd))) {
+            return ApiFactory.createResult(0, "验证成功", null);
+        } else {
+            return ApiFactory.createResult(1, "密码错误", null);
+        }
+    }
+
+
+
+
+
+    @ApiOperation(value = "更新手机号码（需传token）", notes = "使用验证码更新手机号码接口", produces = "application/json")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
-            @ApiImplicitParam(name = "oldPhone", value = "旧手机号码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "newPhone", value = "新手机号码", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
     })
@@ -221,7 +245,37 @@ public class UserController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "更改登录密码", notes = "使用用户手机和验证码更改登录密码接口", produces = "application/json")
+    @ApiOperation(value = "更改登录密码（修改密码）", notes = "使用旧密码更改登录密码接口", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "oldPwd", value = "验证码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "newPwd", value = "新密码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "token", value = "验证码", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/updatePwdLoginByLogined"}, method = RequestMethod.POST)
+    public ApiResult updatePwdLoginByLogined(@RequestParam Integer userId, @RequestParam String oldPwd, @RequestParam String newPwd, @RequestParam String token) {
+
+        if (!checkToken(token)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        User user = userRepo.findOne(new Long(userId));
+        if (user != null) {
+            if (user.getPasswordLogin().equals(CommonUtil.generatePwd(oldPwd))) {
+                user.setPasswordLogin(CommonUtil.generatePwd(newPwd));
+                userRepo.save(user);
+                UserInfo userinfo = userInfoRepo.findOne(user.getUid());
+                UserResult userResult = new UserResult(user, userinfo);
+                return ApiFactory.createResult(0, "修改成功", userResult);
+            } else {
+                return ApiFactory.createResult(1, "旧手机号码不匹配", null);
+            }
+        } else {
+            return ApiFactory.createResult(1, "用户不存在", null);
+        }
+    }
+
+    @ApiOperation(value = "更改登录密码（忘记密码）", notes = "使用用户手机和验证码更改登录密码接口", produces = "application/json")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "phone", value = "用户ID", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "String"),
