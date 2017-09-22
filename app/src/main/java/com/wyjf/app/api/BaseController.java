@@ -21,6 +21,22 @@ public class BaseController {
     /**
      * 验证token，token有效返回true
      * @param token
+     * @param userId
+     * @return
+     */
+    public boolean checkTokenAndUserId(String token, Integer userId) {
+        User user = userRepo.findByTokenOrTime(token);
+        User userById = userRepo.findOne(userId.longValue());
+        if (user != null && userById != null && user.getUid() == userById.getUid()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 验证token，token有效返回true
+     * @param token
      * @return
      */
     public boolean checkToken(String token) {

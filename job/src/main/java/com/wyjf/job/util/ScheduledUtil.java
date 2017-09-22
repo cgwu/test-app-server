@@ -37,15 +37,18 @@ public class ScheduledUtil {
                 logger.info("周末不开盘！");
             }else{
                 if ((c.get(Calendar.HOUR_OF_DAY) >= 9 && c.get(Calendar.HOUR_OF_DAY) <= 11) || (c.get(Calendar.HOUR_OF_DAY) >= 13 && c.get(Calendar.HOUR_OF_DAY) <= 15)) {
-                    String str = httpApiUtil.doGet("http://api.money.126.net/data/feed/1399300,money.api");
-                    str = str.substring(str.indexOf("(") + 1, str.lastIndexOf(")"));
-                    JSONObject json = JSON.parseObject(str);
-                    if(json.getJSONObject("1399300").getString("time") != null){
+                    String str = httpApiUtil.doGet("http://hq.sinajs.cn/list=sz399300");
+                    str = str.substring(str.indexOf("\"") + 1, str.lastIndexOf("\""));
+                    String [] strs = str.split(",");
+                    //JSONObject json = JSON.parseObject(str);
+                    //if(json.getJSONObject("1399300").getString("time") != null){
+//                        StockData sd = new StockData(strs);
+//                        stockDataRepo.save(sd);
 //                        logger.info("_________缓存数据 ________");
 //                        logger.info("key:"+json.getJSONObject("1399300").getString("time")+"，value:"+json);
-                        json.put("issave", "0");//初次缓存，状态为：未保存
-                        redisCache.setCacheObject(json.getJSONObject("1399300").getString("time"), json);
-                    }
+//                        json.put("issave", "0");//初次缓存，状态为：未保存
+                        redisCache.setCacheObject(strs[30]+" "+strs[31], str);
+                    //}
                 } else {
                     logger.info("非开盘时间点无需记录！");
                 }
@@ -56,30 +59,22 @@ public class ScheduledUtil {
     }
 
     @Scheduled(fixedRate = 10000)
-    public void executeData(){
+    public void executeData() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.SECOND, -10);
         logger.info("________读取缓存数据________");
-        for(int i = 10; i > 0; i--){
+        for (int i = 10; i > 0; i--) {
             c.add(Calendar.SECOND, -1);
-            JSONObject json = redisCache.getCacheObject(CommonUtil.dateToString(c.getTime(), "yyyy/MM/dd HH:mm:ss"));
-            logger.info("key:"+CommonUtil.dateToString(c.getTime(), "yyyy/MM/dd HH:mm:ss")+"，value:"+json);
-            if(json != null && "0".equals(json.getString("issave"))){
-                try {
-                    StockData sd = new StockData(json.getJSONObject("1399300"));
-                    sd = stockDataRepo.save(sd);
-                    if(sd != null && sd.getId() != null){
-                        json.put("issave", "1");//状态改为以保存
-                        redisCache.setCacheObject(json.getJSONObject("1399300").getString("time"), json);
-                    }
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                }
+            Object json = redisCache.getCacheObject(CommonUtil.dateToString(c.getTime(), "yyyy-MM-dd HH:mm:ss"));
+            logger.info("key:" + CommonUtil.dateToString(c.getTime(), "yyyy-MM-dd HH:mm:ss") + "，value:" + json);
+            if(json != null){
+                String[] jsons = json.toString().split(",");
+                StockData sd = new StockData(jsons);
+                stockDataRepo.save(sd);
             }
+
         }
-
         logger.info("_________结束读取缓存数据________");
-
     }
 
 }

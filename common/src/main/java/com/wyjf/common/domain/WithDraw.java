@@ -1,8 +1,5 @@
 package com.wyjf.common.domain;
 
-import com.wyjf.common.constant.WithDrawStatus;
-import com.wyjf.common.util.CommonUtil;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -24,8 +21,7 @@ public class WithDraw {
     private String remark;
 
     public WithDraw() {
-        this.status = WithDrawStatus.CHECKING;
-        this.createTime = CommonUtil.getTokenDateTime(0);
+
     }
 
     public Long getId() {

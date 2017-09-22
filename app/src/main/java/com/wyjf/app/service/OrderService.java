@@ -44,6 +44,7 @@ public class OrderService {
         log.setAmount(order.getOrderMoeny());
         log.setType(TranType.DEPOSIT);
         log.setLogTime(order.getPayTime());
+        log.setRefId(order.getOid());
         logBalanceRepo.save(log);
     }
 }

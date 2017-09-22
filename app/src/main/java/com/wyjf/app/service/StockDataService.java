@@ -18,10 +18,19 @@ public class StockDataService {
     public Double getData(LocalDateTime date){
         LocalDateTime time = date.plusMinutes(0);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String dateStr = time.format(dtf);
-        if(date.getHour() == 9){
+
+        if(date.getHour() == 9 && date.getMinute() == 30){
+            String dateStr = time.format(dtf);
             return stockDataRepo.findStockOpen(dateStr);
         }
+
+        if(date.getHour() == 11 && date.getMinute() == 30){
+            time = date.plusMinutes(-1);
+            String dateStr = time.format(dtf);
+            return stockDataRepo.findStockData(dateStr);
+        }
+
+        String dateStr = time.format(dtf);
         return stockDataRepo.findStockData(dateStr);
     }
 }

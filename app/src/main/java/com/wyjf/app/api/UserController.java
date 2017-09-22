@@ -1,6 +1,7 @@
 package com.wyjf.app.api;
 
 import com.wyjf.app.share.SmsSender;
+import com.wyjf.common.constant.WithDrawStatus;
 import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
 import com.wyjf.common.repository.BankCardRepo;
@@ -190,7 +191,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "获取个人信息（需传token）", notes = "使用密码验证操作人接口，0：验证成功，1：密码错误", produces = "application/json")
+    @ApiOperation(value = "验证操作人（需传token）", notes = "使用密码验证操作人接口，0：验证成功，1：密码错误", produces = "application/json")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "userId", value = "用户Token", required = true, paramType = "query", dataType = "Int"),
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String"),
@@ -199,7 +200,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/getCheckUserByPwd"}, method = RequestMethod.POST)
     public ApiResult getCheckUserByPwd(@RequestParam Integer userId, @RequestParam String token, @RequestParam String pwd) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
@@ -223,25 +224,28 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = {"/updatePhone"}, method = RequestMethod.POST)
-    public ApiResult updatePhone(@RequestParam Integer userId, @RequestParam String oldPhone, @RequestParam String newPhone, @RequestParam String token) {
+    public ApiResult updatePhone(@RequestParam Integer userId, @RequestParam String code, @RequestParam String newPhone, @RequestParam String token) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
-        User user = userRepo.findOne(new Long(userId));
-        if (user != null) {
-            if (user.getPhone().equals(oldPhone)) {
+        LogVerifycode logVerifycode = verfyCodeRepo.findByPhoneExist(newPhone);
+        if (logVerifycode != null && code.equals(logVerifycode.getVerifycode())) {
+            User user = userRepo.findByPhone(newPhone);
+            logVerifycode.setStatus(1);
+            verfyCodeRepo.save(logVerifycode);
+            if (user != null) {
                 user.setPhone(newPhone);
                 userRepo.save(user);
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
                 return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
-                return ApiFactory.createResult(1, "旧手机号码不匹配", null);
+                return ApiFactory.createResult(1, "用户不存在", null);
             }
         } else {
-            return ApiFactory.createResult(1, "用户不存在", null);
+            return ApiFactory.createResult(1, "验证码错误", null);
         }
     }
 
@@ -255,7 +259,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/updatePwdLoginByLogined"}, method = RequestMethod.POST)
     public ApiResult updatePwdLoginByLogined(@RequestParam Integer userId, @RequestParam String oldPwd, @RequestParam String newPwd, @RequestParam String token) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
@@ -346,7 +350,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/updateHead"}, method = RequestMethod.POST)
     public ApiResult test(@RequestParam(required = false) MultipartFile file, @RequestParam Integer userId, @RequestParam String nickname, @RequestParam String gender, @RequestParam String token) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
@@ -403,14 +407,10 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/userBindBankInfo"}, method = RequestMethod.POST)
     public ApiResult userBindBankInfo(@RequestParam Integer userId, @RequestParam String token, @RequestParam String bankName, @RequestParam String cardNum, @RequestParam String realName, @RequestParam String openBank) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
-        User user = userRepo.findOne(userId.longValue());
-        if (user.getPasswordTrade() == null) {
-            return ApiFactory.createResult(1, "请先设置提现密码", null);
-        }
         BankCard bankCard = new BankCard();
         bankCard.setUid(userId.longValue());
         bankCard.setCardNumber(cardNum);
@@ -429,7 +429,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/userBankInfo"}, method = RequestMethod.POST)
     public ApiResult userBankInfo(@RequestParam Integer userId, @RequestParam String token) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
@@ -445,7 +445,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/userUnBindBankInfo"}, method = RequestMethod.POST)
     public ApiResult userUnBindBankInfo(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token) {
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
@@ -470,15 +470,20 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/userWithRrawCommit"}, method = RequestMethod.POST)
     public ApiResult userWithRrawCommit(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token, @RequestParam Double money, @RequestParam String passwordTrade){
 
-        if (!checkToken(token)) {
+        if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
         User user = userRepo.findOne(userId.longValue());
         if(user != null){
+            if (user.getPasswordTrade() == null) {
+                return ApiFactory.createResult(1, "请先设置提现密码", null);
+            }
             if(user.getPasswordTrade() != null && user.getPasswordTrade().equals(CommonUtil.generatePwd(passwordTrade))){
                 if(user.getBalance() >= money){
                     WithDraw withDraw = new WithDraw();
+                    withDraw.setStatus(WithDrawStatus.CHECKING);
+                    withDraw.setCreateTime(CommonUtil.getTokenDateTime(0));
                     withDraw.setUid(user.getUid());
                     withDraw.setBcid(cardId.longValue());
                     withDraw.setMoney(money);
