@@ -132,6 +132,7 @@ public class UserController extends BaseController {
     })
     @RequestMapping(value = {"/verifyCode"}, method = RequestMethod.POST)
     public ApiResult verifyCode(@RequestParam String phone) {
+        String msgTemplate = "【新益投】您的验证码是%s。如非本人操作，请忽略本短信";
         //获取该电话号码10分钟之内是否存在有效的验证码
         LogVerifycode oldLogVerifycode = verfyCodeRepo.findByPhoneExist(phone);
         if (oldLogVerifycode != null && oldLogVerifycode.getId() != null) {
@@ -139,7 +140,7 @@ public class UserController extends BaseController {
 //            if (du.toMillis() <= 60 * 1000) {
 //                return ApiFactory.createResult(2, "短信发送至该手机号码过于频繁，请于1分钟之后重试", oldLogVerifycode);
 //            }
-            Pair<Integer, String> result = smsService.send(phone, "【新益投】您的验证码是" + oldLogVerifycode.getVerifycode());
+            Pair<Integer, String> result = smsService.send(phone, String.format(msgTemplate, oldLogVerifycode.getVerifycode()));
             if (result.getFirst() == 0) {
                 oldLogVerifycode.setCreateTime(new Date());
                 verfyCodeRepo.save(oldLogVerifycode);   //更新最后发送时间
@@ -153,7 +154,7 @@ public class UserController extends BaseController {
         LogVerifycode v = new LogVerifycode(phone, verfycode);
         v = verfyCodeRepo.save(v);
         if (v.getId() != null) {
-            Pair<Integer, String> result = smsService.send(phone, "【新益投】您的验证码是" + v.getVerifycode());
+            Pair<Integer, String> result = smsService.send(phone, String.format(msgTemplate, v.getVerifycode()));
             if (result.getFirst() == 0) {
                 return ApiFactory.createResult(0, "获取验证码成功", "");
             } else {
@@ -211,9 +212,6 @@ public class UserController extends BaseController {
             return ApiFactory.createResult(1, "密码错误", null);
         }
     }
-
-
-
 
 
     @ApiOperation(value = "更新手机号码（需传token）", notes = "使用验证码更新手机号码接口", produces = "application/json")
@@ -468,19 +466,19 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "passwordTrade", value = "提现密码", required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = {"/userWithRrawCommit"}, method = RequestMethod.POST)
-    public ApiResult userWithRrawCommit(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token, @RequestParam Double money, @RequestParam String passwordTrade){
+    public ApiResult userWithRrawCommit(@RequestParam Integer userId, @RequestParam Integer cardId, @RequestParam String token, @RequestParam Double money, @RequestParam String passwordTrade) {
 
         if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
         User user = userRepo.findOne(userId.longValue());
-        if(user != null){
+        if (user != null) {
             if (user.getPasswordTrade() == null) {
                 return ApiFactory.createResult(1, "请先设置提现密码", null);
             }
-            if(user.getPasswordTrade() != null && user.getPasswordTrade().equals(CommonUtil.generatePwd(passwordTrade))){
-                if(user.getBalance() >= money){
+            if (user.getPasswordTrade() != null && user.getPasswordTrade().equals(CommonUtil.generatePwd(passwordTrade))) {
+                if (user.getBalance() >= money) {
                     WithDraw withDraw = new WithDraw();
                     withDraw.setStatus(WithDrawStatus.CHECKING);
                     withDraw.setCreateTime(CommonUtil.getTokenDateTime(0));
@@ -489,17 +487,16 @@ public class UserController extends BaseController {
                     withDraw.setMoney(money);
                     withDrawRepo.save(withDraw);
                     return ApiFactory.createResult(0, "提交成功，等待审核", null);
-                }else{
+                } else {
                     return ApiFactory.createResult(1, "云币不足", null);
                 }
-            }else{
+            } else {
                 return ApiFactory.createResult(1, "提现密码错误", null);
             }
-        }else{
+        } else {
             return ApiFactory.createResult(1, "用户不存在", null);
         }
     }
-
 
 
 }
