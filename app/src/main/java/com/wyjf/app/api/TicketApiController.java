@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/ticket")
@@ -122,6 +123,28 @@ public class TicketApiController {
 
 //        Predicate predicate = QTicket.ticket.did.eq(drawId).and(QTicket.ticket.uid.eq(user.getUid()));
 //        ticketRepo.findAll(predicate, new Sort(Sort.Direction.DESC, "tid"));
+    }
+
+
+    @RequestMapping(value = {"/detail"}, method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "授权码", required = true, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "tid", value = "票ID", required = true, paramType = "query", dataType = "Long"),
+    })
+    @ApiOperation(value = "查看票详细", notes = "查询我的某张票详细信息接口(status:0未结账;1已结账),返回状态码code:\n" +
+            "*  0: 成功\n" +
+            "*  8: 授权码(Token)不存在或已过时",
+            produces = "application/json")
+    public ApiResult detail(
+            @RequestParam String token,
+            @RequestParam long tid
+    ) {
+        User user = userRepo.findByTokenOrTime(token);
+        if (user == null) {
+            return ApiFactory.fail(ApiCode.TOKEN_INVALID, "授权码(Token)不存在或已过时");
+        }
+        Map<String, Object> map = ticketService.detail(tid, user.getUid());
+        return ApiFactory.createResult(map);
     }
 
 }
