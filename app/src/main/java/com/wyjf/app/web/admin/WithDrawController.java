@@ -1,8 +1,9 @@
 package com.wyjf.app.web.admin;
 
-import com.wyjf.common.domain.Draw;
+import com.wyjf.app.service.WithDrawService;
 import com.wyjf.common.domain.WithDraw;
-import com.wyjf.common.message.QueryWithDraw;
+import com.wyjf.common.message.WithDrawRequest;
+import com.wyjf.common.message.WithDrawResult;
 import com.wyjf.common.repository.WithDrawRepo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class WithDrawController {
     private HttpServletRequest request;
     @Autowired
     private WithDrawRepo withDrawRepo;
+    @Autowired
+    private WithDrawService withDrawService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list() {
@@ -39,16 +42,15 @@ public class WithDrawController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public Map<Object, Object> listQuery(@ModelAttribute QueryWithDraw req) {
-
+    public Map<Object, Object> listQuery(@ModelAttribute WithDrawRequest req) {
         PageRequest pReq = req.getPage(request);
-
-        Page<WithDraw> rows = withDrawRepo.findAll(pReq);
+        Map<String, Object> resultMap = withDrawService.findWithDrawList(pReq, request);
+        logger.info(resultMap.get("content"));
         HashMap map = new HashMap();
-        map.put("data", rows.getContent());
+        map.put("data", resultMap.get("content"));
         map.put("draw", req.getDraw());
-        map.put("recordsTotal", rows.getTotalElements());
-        map.put("recordsFiltered", rows.getTotalElements());
+        map.put("recordsTotal", resultMap.get("count"));
+        map.put("recordsFiltered", resultMap.get("count"));
         return map;
     }
 }

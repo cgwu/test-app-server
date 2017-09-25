@@ -2,6 +2,8 @@ package com.wyjf.common.repository;
 
 import com.wyjf.common.domain.BankCard;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -11,4 +13,13 @@ import java.util.List;
 public interface BankCardRepo extends JpaRepository<BankCard, Long>{
 
     public List<BankCard> findByUid(Long uid);
+
+    @Query(value = "SELECT " +
+            "bc " +
+            "FROM " +
+            "WithDraw wd  " +
+            "LEFT JOIN BankCard bc ON bc.id = wd.bcid " +
+            "WHERE wd.uid = :uId " +
+            "ORDER BY wd.id DESC ")
+    public List<BankCard> findByUidAsOne(@Param("uId") Long uId);
 }

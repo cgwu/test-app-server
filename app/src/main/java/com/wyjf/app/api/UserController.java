@@ -4,10 +4,7 @@ import com.wyjf.app.share.SmsSender;
 import com.wyjf.common.constant.WithDrawStatus;
 import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
-import com.wyjf.common.repository.BankCardRepo;
-import com.wyjf.common.repository.LogVerifyCodeRepo;
-import com.wyjf.common.repository.UserInfoRepo;
-import com.wyjf.common.repository.WithDrawRepo;
+import com.wyjf.common.repository.*;
 import com.wyjf.common.util.CommonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -21,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -43,6 +41,8 @@ public class UserController extends BaseController {
     private BankCardRepo bankCardRepo;
     @Autowired
     private WithDrawRepo withDrawRepo;
+    @Autowired
+    private QuestionRepo questionRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -103,6 +103,12 @@ public class UserController extends BaseController {
                     user = userRepo.save(user);
                     UserInfo userInfo = userInfoRepo.findOne(user.getUid());
                     UserResult userResult = new UserResult(user, userInfo);
+                    List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                    if(bankCard != null && bankCard.size() > 0){
+                        userResult.setCardId(bankCard.get(0).getId());
+                        userResult.setBank(bankCard.get(0).getBank());
+                        userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                    }
                     return ApiFactory.createResult(0, "登录成功", userResult);
                 } else {
                     return ApiFactory.createResult(1, "登录失败，未注册", null);
@@ -118,6 +124,12 @@ public class UserController extends BaseController {
                 user = userRepo.save(user);
                 UserInfo userInfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userInfo);
+                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                if(bankCard != null && bankCard.size() > 0){
+                    userResult.setCardId(bankCard.get(0).getId());
+                    userResult.setBank(bankCard.get(0).getBank());
+                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                }
                 return ApiFactory.createResult(0, "登录成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "登录失败，未注册或密码错误", null);
@@ -178,14 +190,24 @@ public class UserController extends BaseController {
 
         User user;
         UserInfo userinfo;
+
         try {
             user = userRepo.findByTokenOrTime(token);
             userinfo = userInfoRepo.findOne(user.getUid());
+
         } catch (Exception e) {
+            e.printStackTrace();
             return ApiFactory.createResult(-1, "获取用户信息失败", null);
         }
         if (user != null && user.getUid() != null) {
             UserResult userResult = new UserResult(user, userinfo);
+            List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+            if(bankCard != null && bankCard.size() > 0){
+                userResult.setCardId(bankCard.get(0).getId());
+                userResult.setBank(bankCard.get(0).getBank());
+                userResult.setCardNumber(bankCard.get(0).getCardNumber());
+            }
+
             return ApiFactory.createResult(0, "获取用户信息成功", userResult);
         } else {
             return ApiFactory.createResult(1, "获取用户信息失败", null);
@@ -238,6 +260,12 @@ public class UserController extends BaseController {
                 userRepo.save(user);
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
+                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                if(bankCard != null && bankCard.size() > 0){
+                    userResult.setCardId(bankCard.get(0).getId());
+                    userResult.setBank(bankCard.get(0).getBank());
+                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                }
                 return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "用户不存在", null);
@@ -268,6 +296,12 @@ public class UserController extends BaseController {
                 userRepo.save(user);
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
+                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                if(bankCard != null && bankCard.size() > 0){
+                    userResult.setCardId(bankCard.get(0).getId());
+                    userResult.setBank(bankCard.get(0).getBank());
+                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                }
                 return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "旧手机号码不匹配", null);
@@ -293,6 +327,12 @@ public class UserController extends BaseController {
                 userRepo.save(user);
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
+                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                if(bankCard != null && bankCard.size() > 0){
+                    userResult.setCardId(bankCard.get(0).getId());
+                    userResult.setBank(bankCard.get(0).getBank());
+                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                }
                 return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "用户不存在", null);
@@ -327,6 +367,12 @@ public class UserController extends BaseController {
                 verfyCodeRepo.save(logVerifycode);
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
+                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                if(bankCard != null && bankCard.size() > 0){
+                    userResult.setCardId(bankCard.get(0).getId());
+                    userResult.setBank(bankCard.get(0).getBank());
+                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                }
                 return ApiFactory.createResult(0, "修改成功", userResult);
             } else {
                 return ApiFactory.createResult(1, "手机号码不是用户绑定的手机号码", null);
@@ -371,6 +417,12 @@ public class UserController extends BaseController {
                 userInfoRepo.save(userInfo);
             }
             UserResult userResult = new UserResult(user, userInfo);
+            List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+            if(bankCard != null && bankCard.size() > 0){
+                userResult.setCardId(bankCard.get(0).getId());
+                userResult.setBank(bankCard.get(0).getBank());
+                userResult.setCardNumber(bankCard.get(0).getCardNumber());
+            }
             return ApiFactory.createResult(0, "保存成功", userResult);
         } catch (Exception e) {
             return ApiFactory.createResult(-1, "保存失败", e.getMessage());
@@ -498,5 +550,33 @@ public class UserController extends BaseController {
         }
     }
 
+
+    @ApiOperation(value = "用户提现记录（需传token）", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userWithDrawList"}, method = RequestMethod.POST)
+    public ApiResult userWithDrawList(@RequestParam Integer userId, @RequestParam String token){
+        if (!checkTokenAndUserId(token, userId)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        List<WithDraw> list = withDrawRepo.findByUid(userId.longValue());
+        return  ApiFactory.createResult(0, "", list);
+    }
+
+
+    @ApiOperation(value = "提交问题反馈", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "question", value = "问题描述", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/questionCommit"}, method = RequestMethod.POST)
+    public ApiResult questionCommit(@RequestParam String question){
+        Question q = new Question();
+        q.setQuestion(question);
+        questionRepo.save(q);
+        return ApiFactory.createResult(0, "提交成功", null);
+    }
 
 }

@@ -137,7 +137,7 @@ public class CommonUtil {
      */
     public static LocalDateTime getTokenDateTime(int days){
         LocalDateTime time = LocalDateTime.now();
-        return time.plusDays(10);
+        return time.plusDays(days);
     }
 
     //线程安全

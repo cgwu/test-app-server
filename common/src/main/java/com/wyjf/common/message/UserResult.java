@@ -11,6 +11,9 @@ import java.util.Date;
 public class UserResult extends User {
     private String headurl;
     private Integer isSetTrade;
+    private Long cardId;
+    private String bank;
+    private String cardNumber;
 
     public UserResult(User u, UserInfo userInfo) {
         this.setUid(u.getUid());
@@ -42,5 +45,29 @@ public class UserResult extends User {
 
     public void setIsSetTrade(Integer isSetTrade) {
         this.isSetTrade = isSetTrade;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    public Long getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(Long cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 }
