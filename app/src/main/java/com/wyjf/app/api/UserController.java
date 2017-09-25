@@ -117,22 +117,26 @@ public class UserController extends BaseController {
                 return ApiFactory.createResult(1, "验证码错误", null);
             }
         } else {
-            User user = userRepo.findByPhoneOrPwd(phone, CommonUtil.generatePwd(pwd));
+            User user = userRepo.findByPhone(phone);
             if (user != null) {
-                user.setTokenTime(CommonUtil.getTokenDateTime(10));
-                user.setToken(UUID.randomUUID().toString());
-                user = userRepo.save(user);
-                UserInfo userInfo = userInfoRepo.findOne(user.getUid());
-                UserResult userResult = new UserResult(user, userInfo);
-                List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
-                    userResult.setCardId(bankCard.get(0).getId());
-                    userResult.setBank(bankCard.get(0).getBank());
-                    userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                if(user.getPasswordLogin().equals(CommonUtil.generatePwd(pwd))){
+                    user.setTokenTime(CommonUtil.getTokenDateTime(10));
+                    user.setToken(UUID.randomUUID().toString());
+                    user = userRepo.save(user);
+                    UserInfo userInfo = userInfoRepo.findOne(user.getUid());
+                    UserResult userResult = new UserResult(user, userInfo);
+                    List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
+                    if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                        userResult.setCardId(bankCard.get(0).getId());
+                        userResult.setBank(bankCard.get(0).getBank());
+                        userResult.setCardNumber(bankCard.get(0).getCardNumber());
+                    }
+                    return ApiFactory.createResult(0, "登录成功", userResult);
+                }else{
+                    return ApiFactory.createResult(1, "登录失败，密码错误", null);
                 }
-                return ApiFactory.createResult(0, "登录成功", userResult);
             } else {
-                return ApiFactory.createResult(1, "登录失败，未注册或密码错误", null);
+                return ApiFactory.createResult(1, "登录失败，未注册", null);
             }
         }
 
@@ -538,7 +542,9 @@ public class UserController extends BaseController {
                     withDraw.setBcid(cardId.longValue());
                     withDraw.setMoney(money);
                     withDrawRepo.save(withDraw);
-                    return ApiFactory.createResult(0, "提交成功，等待审核", null);
+                    user.setBalance(user.getBalance()-money);
+                    userRepo.save(user);
+                    return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
                 } else {
                     return ApiFactory.createResult(1, "云币不足", null);
                 }
@@ -558,6 +564,7 @@ public class UserController extends BaseController {
     })
     @RequestMapping(value = {"/userWithDrawList"}, method = RequestMethod.POST)
     public ApiResult userWithDrawList(@RequestParam Integer userId, @RequestParam String token){
+
         if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
