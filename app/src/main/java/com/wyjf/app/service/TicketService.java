@@ -109,12 +109,13 @@ public class TicketService {
 
 
     private static final String SQL_DETAIL = "select t.`tid`, t.`sid`, t.`uid`, t.`did`, t.`direction`, t.`amount`, DATE_FORMAT(t.`buy_time`,'%Y-%m-%d %H:%i:%s') as buy_time, t.`status`, \n" +
-            "\td.draw_day, d.draw_seq, concat(DATE_FORMAT(d.draw_day,'%Y%m%d-'),d.draw_seq) as draw_no , dr.result as result_direction,  \n" +
-            "\tcase when r.win_amount is null then 0 else 1 end as is_win, ifnull(win_amount, 0) as win_amount \n" +
-            "from ticket t left join ticket_result_win r on t.tid = r.tid \n" +
-            "left join draw d on t.did = d.did \n" +
-            "left join draw_result dr on t.did = dr.did \n" +
-            "where t.tid = ?";
+            " d.draw_day, d.draw_seq, concat(DATE_FORMAT(d.draw_day,'%Y%m%d-'),d.draw_seq) as draw_no , ifnull(dr.result,-1) as result_direction,  \n" +
+            " case t.status when 0 then -1 else  case when r.win_amount is null then 0 else 1 end end as  is_win, " +
+            " ifnull(win_amount, 0) as win_amount \n" +
+            " from ticket t left join ticket_result_win r on t.tid = r.tid \n" +
+            " left join draw d on t.did = d.did \n" +
+            " left join draw_result dr on t.did = dr.did \n" +
+            " where t.tid = ?";
 
     public Map<String, Object> detail(long tid) {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(SQL_DETAIL, tid);

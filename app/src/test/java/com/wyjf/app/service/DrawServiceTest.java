@@ -26,7 +26,7 @@ public class DrawServiceTest {
 
     @Test
     public void testProcess(){
-        Pair<Integer,String> result = service.process(13);
+        Pair<Integer,String> result = service.process(14);
         log.info("code:{},msg:{}", result.getFirst(), result.getSecond());
     }
 }
