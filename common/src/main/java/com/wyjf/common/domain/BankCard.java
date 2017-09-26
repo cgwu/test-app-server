@@ -1,5 +1,7 @@
 package com.wyjf.common.domain;
 
+import com.wyjf.common.util.CommonUtil;
+
 import javax.persistence.*;
 
 /**
@@ -34,11 +36,11 @@ public class BankCard {
     }
 
     public String getCardNumber() {
-        return cardNumber;
+        return CommonUtil.bankCardReplaceWithStar(cardNumber);
     }
 
     public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+        this.cardNumber = CommonUtil.bankCardReplaceWithStar(cardNumber);
     }
 
     public String getRealName() {

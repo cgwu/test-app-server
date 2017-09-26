@@ -19,5 +19,7 @@ public interface LogBalanceRepo extends JpaRepository<LogBalance, Long>,QueryDsl
 
     @Query(name = "queryLogBalanceEx")
     public List<LogBalanceEx> findLogBalanceEx(long uid, int type, int offset, int length);
+    @Query(name = "queryLogBalanceBc")
+    public List<LogBalanceEx> findLogBalanceBc(long uid, int type, int offset, int length);
 
 }

@@ -92,4 +92,13 @@ public interface StockDataRepo extends JpaRepository<StockData, Long> {
             "ORDER BY tsd.time_time DESC " +
             "LIMIT 0,1", nativeQuery = true)
     public Double findStockOpen(@Param("date")String data);
+    @Query(value = "SELECT " +
+            "tsd.yestclose " +
+            "FROM " +
+            "t_stock_data tsd " +
+            "WHERE " +
+            "DATE_FORMAT(tsd.time_time, '%Y-%m-%d') = :date " +
+            "ORDER BY tsd.time_time DESC " +
+            "LIMIT 0,1", nativeQuery = true)
+    public Double findStockYestClose(@Param("date")String data);
 }

@@ -14,6 +14,16 @@ import java.time.LocalDateTime;
                         "where b.uid = ? and b.type= ? " +
                         "order by lid desc limit ?, ?"
         ),
+        @NamedNativeQuery(name = "queryLogBalanceBc", resultSetMapping = "queryLogBalanceBcMap",
+                query = "SELECT " +
+                        "lb.lid, lb.uid, lb.amount, lb.`type`, lb.tag, lb.ref_id AS refId, lb.log_time AS logTime, bc.card_number AS cardNumber, bc.bank AS bank " +
+                        "FROM " +
+                        "log_balance lb " +
+                        "LEFT JOIN withdraw w ON w.id = lb.ref_id " +
+                        "LEFT JOIN bank_card bc ON bc.id = w.bcid " +
+                        "WHERE lb.uid = ? AND lb.type = ? " +
+                        "order by lid desc limit ?, ?"
+        )
 })
 
 @SqlResultSetMappings({
@@ -34,6 +44,24 @@ import java.time.LocalDateTime;
                                 }
                         )
                 }),
+        @SqlResultSetMapping(
+                name = "queryLogBalanceBcMap",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = LogBalanceEx.class,
+                                columns = {
+                                        @ColumnResult(name = "lid", type = Long.class),
+                                        @ColumnResult(name = "uid", type = Long.class),
+                                        @ColumnResult(name = "amount", type = Double.class),
+                                        @ColumnResult(name = "type", type = Integer.class),
+                                        @ColumnResult(name = "tag", type = Integer.class),
+                                        @ColumnResult(name = "refId", type = Long.class),
+                                        @ColumnResult(name = "logTime", type = LocalDateTime.class),
+                                        @ColumnResult(name = "cardNumber", type = String.class),
+                                        @ColumnResult(name = "bank", type = String.class),
+                                }
+                        )
+                })
 })
 
 

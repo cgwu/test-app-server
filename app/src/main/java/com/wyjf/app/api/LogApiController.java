@@ -73,6 +73,9 @@ public class LogApiController {
         if (type == TranType.LOG_WALLET) {
             List<LogBalanceEx> list = logBalanceRepo.findLogBalanceEx(user.getUid(), type, ioffset, ilength);
             return ApiFactory.createResult(list);
+        } else if (type == TranType.WITHDRAW) {
+            List<LogBalanceEx> list = logBalanceRepo.findLogBalanceBc(user.getUid(), type, ioffset, ilength);
+            return ApiFactory.createResult(list);
         } else {
             Predicate predicate = QLogBalance.logBalance.uid.eq(user.getUid())
                     .and(QLogBalance.logBalance.type.eq(type));

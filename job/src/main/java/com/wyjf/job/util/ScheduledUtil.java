@@ -45,7 +45,7 @@ public class ScheduledUtil {
 //                        StockData sd = new StockData(strs);
 //                        stockDataRepo.save(sd);
 //                        logger.info("_________缓存数据 ________");
-//                        logger.info("key:"+json.getJSONObject("1399300").getString("time")+"，value:"+json);
+                        logger.info("key:"+strs[30]+" "+strs[31]+"，value:"+str);
 //                        json.put("issave", "0");//初次缓存，状态为：未保存
                         redisCache.setCacheObject(strs[30]+" "+strs[31], str);
                     //}

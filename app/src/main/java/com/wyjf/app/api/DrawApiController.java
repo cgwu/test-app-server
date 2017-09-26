@@ -1,6 +1,7 @@
 package com.wyjf.app.api;
 
 import com.wyjf.app.service.DrawService;
+import com.wyjf.app.service.StockDataService;
 import com.wyjf.app.service.SystemParamService;
 import com.wyjf.app.service.TicketService;
 import com.wyjf.common.domain.Draw;
@@ -8,6 +9,7 @@ import com.wyjf.common.domain.User;
 import com.wyjf.common.message.ApiCode;
 import com.wyjf.common.message.DrawEx;
 import com.wyjf.common.repository.DrawRepo;
+import com.wyjf.common.repository.StockDataRepo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,6 +44,9 @@ public class DrawApiController {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private StockDataRepo stockDataRepo;
 
     /*
     @RequestMapping(value = {"/{date}"}, method = RequestMethod.GET)
@@ -146,7 +151,11 @@ public class DrawApiController {
     ) {
         Map<String, Object> map = drawService.detail(did);
         List<Map<String, Object>> list123 = ticketService.find123prize(did);
-        if (map != null) map.put("prize123", list123);
+        if (map != null) {
+            double yester_close = stockDataRepo.findStockYestClose(map.get("draw_day").toString());
+            map.put("yester_close", yester_close);
+            map.put("prize123", list123);
+        }
         return ApiFactory.createResult(map);
     }
 

@@ -9,7 +9,8 @@
 <body>
 
 <th:block layout:fragment="inlinestyle">
-    <link rel="stylesheet" th:href="${application.static + '/components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css'}" />
+    <link rel="stylesheet"
+          th:href="${application.static + '/components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css'}"/>
 </th:block>
 
 <ul class="breadcrumb" layout:fragment="breadcrumb">
@@ -36,7 +37,7 @@
                     <tr role="row" class="heading">
                         <th class="center">
                             <label class="pos-rel">
-                                <input type="checkbox" class="ace group-checkable" />
+                                <input type="checkbox" class="ace group-checkable"/>
                                 <span class="lbl"></span>
                             </label>
                         </th>
@@ -52,7 +53,7 @@
                     </tr>
 
                     <tr role="row" class="filter">
-                        <td> </td>
+                        <td></td>
                         <td></td>
                         <td>
                             <div class="input-group input-medium">
@@ -67,7 +68,8 @@
                         <td></td>
                         <td>
                             <button class="btn btn-sm btn-warning filter-submit margin-bottom">
-                                <i class="fa fa-search"></i> 搜索</button>
+                                <i class="fa fa-search"></i> 搜索
+                            </button>
                         </td>
                     </tr>
                     </thead>
@@ -78,16 +80,65 @@
             </div>
         </div>
     </div>
+    <div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable ui-resizable"
+         tabindex="-1" role="dialog" aria-describedby="dialog-message" aria-labelledby="ui-id-34"
+         style="position: absolute; height: auto; width: 300px; top: 39px; left: 802px; display: none;">
+        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix ui-draggable-handle"><span
+                id="ui-id-34" class="ui-dialog-title"><div class="widget-header widget-header-small"><h4
+                class="smaller"><i class="ace-icon fa fa-check"></i> jQuery UI Dialog</h4></div></span>
+            <button type="button"
+                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
+                    role="button" title="Close"><span
+                    class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span
+                    class="ui-button-text">Close</span></button>
+        </div>
+        <div id="dialog-message" class="ui-dialog-content ui-widget-content"
+             style="width: auto; min-height: 30px; max-height: none; height: auto;">
+            <p>
+                This is the default dialog which is useful for displaying information. The dialog window can be moved,
+                resized and closed with the 'x' icon.
+            </p>
 
+            <div class="hr hr-12 hr-double"></div>
+
+            <p>
+                Currently using
+                <b>36% of your storage space</b>.
+            </p>
+        </div>
+        <div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"
+             style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
+        <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <div class="ui-dialog-buttonset">
+                <button type="button"
+                        class="btn btn-minier ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                        role="button"><span class="ui-button-text">Cancel</span></button>
+                <button type="button"
+                        class="btn btn-primary btn-minier ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                        role="button"><span class="ui-button-text">OK</span></button>
+            </div>
+        </div>
+    </div>
     <div th:replace="admin/draw/add"></div>
 
 </div>
 
 <th:block layout:fragment="pagescript">
-    <script type="text/javascript" th:src="${application.static + '/components/datatables-latest/js/jquery.dataTables.min.js'}"></script>
-    <script type="text/javascript" th:src="${application.static + '/components/datatables-latest/js/dataTables.bootstrap.min.js'}"></script>
-    <script type="text/javascript" th:src="${application.static + '/components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'}"></script>
-    <script type="text/javascript" th:src="${application.static + '/components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js'}"></script>
+    <script type="text/javascript"
+            th:src="${application.static + '/components/datatables-latest/js/jquery.dataTables.min.js'}"></script>
+    <script type="text/javascript"
+            th:src="${application.static + '/components/datatables-latest/js/dataTables.bootstrap.min.js'}"></script>
+    <script type="text/javascript"
+            th:src="${application.static + '/components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'}"></script>
+    <script type="text/javascript"
+            th:src="${application.static + '/components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js'}"></script>
     <script th:src="@{/js/util/datatable.js}"></script>
 </th:block>
 
@@ -105,7 +156,7 @@
                 onError: function (grid) {
                     // execute some code on network or other general error
                 },
-                onDataLoad: function(grid) {
+                onDataLoad: function (grid) {
                     // execute some code on ajax data load
                 },
 
@@ -113,41 +164,42 @@
                     columns: [
                         {
                             data: 'id',
-                            className:'center',
-                            render: function ( data, type, full, meta ) {
-                                return "<label class='pos-rel'><input type='checkbox' class='ace' value='"+data+"'><span class='lbl'></span></label>";
+                            className: 'center',
+                            render: function (data, type, full, meta) {
+                                return "<label class='pos-rel'><input type='checkbox' class='ace' value='" + data + "'><span class='lbl'></span></label>";
                             }
                         },
-                        { data:'id'},
-                        { data:'nickname'},
-                        { data:'card_number'},
-                        { data:'money'},
+                        {data: 'id'},
+                        {data: 'nickname'},
+                        {data: 'card_number'},
+                        {data: 'money'},
                         {
-                            data:'create_time',
-                            render: function ( data, type, full, meta ) {
+                            data: 'create_time',
+                            render: function (data, type, full, meta) {
                                 return data;
                             }
                         },
-                        { data:'handing_time'},
+                        {data: 'handing_time'},
                         {
-                            data:'status',
-                            render: function ( data, type, full, meta ) {
-                                if(data == 0){
+                            data: 'status',
+                            render: function (data, type, full, meta) {
+                                if (data == 0) {
                                     return "申请中";
                                 }
-                                if(data == 1){
+                                if (data == 1) {
                                     return "审核通过，已转账";
                                 }
-                                if(data == 2){
+                                if (data == 2) {
                                     return "审核不通过";
                                 }
                             }
                         },
-                        { data:'remark'},
+                        {data: 'remark'},
                         {
                             data: 'id',
-                            render: function ( data, type, full, meta ) {
-                                return "";
+                            render: function (data, type, full, meta) {
+                                return "<button onclick='tongguo(this)' oid='" + data + "' class='btn btn-info btn-sm'>审核通过</button> " +
+                                        "<button onclick='butongguo(this)' oid='" + data + "' class='btn btn-purple btn-sm'>审核不通过</button>";
                             },
                             orderable: false
                         }
@@ -164,7 +216,7 @@
                         [1, "asc"]
                     ],// set first column as a default sort by asc,
 
-                    deferRender:    true,
+                    deferRender: true,
                     scroller: {
                         loadingIndicator: true
                     }
@@ -205,33 +257,33 @@
             //grid.clearAjaxParams();
         }
 
-        $(function() {
+        $(function () {
             fnInitTable();
-
-            //datepicker plugin
-            $('.date-picker').datepicker({
-                        language: "zh-CN",
-                        autoclose: true,
-                        todayHighlight: true
-                    })
-                    .next().on(ace.click_event, function(){
-                $(this).prev().focus();
-            });
-
-            $('#frmAdd').on('submit', function(e) {
-                e.preventDefault();
-                $(this).ajaxSubmit({
-                    success:function(rsp){
-//                        if(rsp.code != 0){
-                            bootbox.alert(rsp.msg);
-//                        }
-                    }
+            function tongguo(v) {
+                var dialog = $("#dialog-message").removeClass('hide').dialog({
+                    modal: true,
+                    title: "<div class='widget-header widget-header-small'><h4 class='smaller'><i class='ace-icon fa fa-check'></i>确认已经转账了吗？</h4></div>",
+                    title_html: true,
+                    buttons: [
+                        {
+                            text: "取消",
+                            "class": "btn btn-minier",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "提交",
+                            "class": "btn btn-primary btn-minier",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
                 });
-            });
-
+            }
         });
     </script>
 </th:block>
-
 </body>
 </html>

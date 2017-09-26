@@ -33,4 +33,16 @@ public class StockDataService {
         String dateStr = time.format(dtf);
         return stockDataRepo.findStockData(dateStr);
     }
+
+    /**
+     *
+     * @param date  今天
+     * @return
+     */
+    public Double getDataByYesterday(LocalDateTime date){
+        LocalDateTime time = date.plusMinutes(0);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateStr = time.format(dtf);
+        return stockDataRepo.findStockYestClose(dateStr);
+    }
 }
