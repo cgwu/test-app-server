@@ -136,7 +136,7 @@ public class DrawApiController {
 
     @RequestMapping(value = {"/detail"}, method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "did", value = "票ID", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "did", value = "盘口ID", required = true, paramType = "query", dataType = "Long"),
     })
     @ApiOperation(value = "查看盘口详细", notes = "查询盘口详细信息接口(status:0未结账;1已结账),返回状态码code:\n" +
             "*  0: 成功\n",
@@ -146,7 +146,7 @@ public class DrawApiController {
     ) {
         Map<String, Object> map = drawService.detail(did);
         List<Map<String, Object>> list123 = ticketService.find123prize(did);
-        map.put("prize123", list123);
+        if (map != null) map.put("prize123", list123);
         return ApiFactory.createResult(map);
     }
 
