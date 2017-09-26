@@ -1,6 +1,7 @@
 package com.wyjf.app.api;
 
 import com.wyjf.app.share.SmsSender;
+import com.wyjf.common.constant.TranType;
 import com.wyjf.common.constant.WithDrawStatus;
 import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
@@ -43,6 +44,8 @@ public class UserController extends BaseController {
     private WithDrawRepo withDrawRepo;
     @Autowired
     private QuestionRepo questionRepo;
+    @Autowired
+    private LogBalanceRepo logBalanceRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -542,8 +545,15 @@ public class UserController extends BaseController {
                     withDraw.setBcid(cardId.longValue());
                     withDraw.setMoney(money);
                     withDrawRepo.save(withDraw);
-                    user.setBalance(user.getBalance()-money);
-                    userRepo.save(user);
+                    userRepo.addBalance(user.getUid(), -money);
+                    //保存日志 log_balance
+                    LogBalance log = new LogBalance();
+                    log.setUid(user.getUid());
+                    log.setAmount(money);
+                    log.setType(TranType.WITHDRAW);
+                    log.setLogTime(withDraw.getCreateTime());
+                    log.setRefId(withDraw.getId());
+                    logBalanceRepo.save(log);
                     return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
                 } else {
                     return ApiFactory.createResult(1, "云币不足", null);
@@ -555,24 +565,6 @@ public class UserController extends BaseController {
             return ApiFactory.createResult(1, "用户不存在", null);
         }
     }
-
-
-    @ApiOperation(value = "用户提现记录（需传token）", notes = "", produces = "application/json")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
-            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
-    })
-    @RequestMapping(value = {"/userWithDrawList"}, method = RequestMethod.POST)
-    public ApiResult userWithDrawList(@RequestParam Integer userId, @RequestParam String token){
-
-        if (!checkTokenAndUserId(token, userId)) {
-            return ApiFactory.createResult(8, "请重新登陆", null);
-        }
-
-        List<WithDraw> list = withDrawRepo.findByUid(userId.longValue());
-        return  ApiFactory.createResult(0, "", list);
-    }
-
 
     @ApiOperation(value = "提交问题反馈", notes = "", produces = "application/json")
     @ApiImplicitParams(value = {
