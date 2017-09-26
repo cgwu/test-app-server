@@ -1,11 +1,20 @@
 package com.wyjf.app.service;
 
+import com.wyjf.common.constant.TranType;
+import com.wyjf.common.constant.WithDrawStatus;
+import com.wyjf.common.domain.LogBalance;
+import com.wyjf.common.domain.User;
+import com.wyjf.common.domain.WithDraw;
+import com.wyjf.common.repository.LogBalanceRepo;
+import com.wyjf.common.repository.UserRepo;
+import com.wyjf.common.repository.WithDrawRepo;
 import com.wyjf.common.util.CommonUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -21,6 +30,12 @@ public class WithDrawService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private WithDrawRepo withDrawRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private LogBalanceRepo logBalanceRepo;
     public Map<String, Object> findWithDrawList(PageRequest pageRequest, HttpServletRequest request){
         int pageSize = pageRequest.getPageSize();
         int pageNumber = pageRequest.getPageNumber();
@@ -60,5 +75,25 @@ public class WithDrawService {
         map.put("content", list);
         logger.info(list);
         return map;
+    }
+
+    @Transactional
+    public void userWithRrawCommit(User user, Integer cardId, Double money){
+        WithDraw withDraw = new WithDraw();
+        withDraw.setStatus(WithDrawStatus.CHECKING);
+        withDraw.setCreateTime(CommonUtil.getTokenDateTime(0));
+        withDraw.setUid(user.getUid());
+        withDraw.setBcid(cardId.longValue());
+        withDraw.setMoney(money);
+        withDrawRepo.save(withDraw);
+        userRepo.addBalance(user.getUid(), -money);
+        //保存日志 log_balance
+        LogBalance log = new LogBalance();
+        log.setUid(user.getUid());
+        log.setAmount(money);
+        log.setType(TranType.WITHDRAW);
+        log.setLogTime(withDraw.getCreateTime());
+        log.setRefId(withDraw.getId());
+        logBalanceRepo.save(log);
     }
 }

@@ -1,5 +1,6 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.WithDrawService;
 import com.wyjf.app.share.SmsSender;
 import com.wyjf.common.constant.TranType;
 import com.wyjf.common.constant.WithDrawStatus;
@@ -41,11 +42,9 @@ public class UserController extends BaseController {
     @Autowired
     private BankCardRepo bankCardRepo;
     @Autowired
-    private WithDrawRepo withDrawRepo;
+    private WithDrawService withDrawService;
     @Autowired
     private QuestionRepo questionRepo;
-    @Autowired
-    private LogBalanceRepo logBalanceRepo;
 
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
@@ -538,23 +537,14 @@ public class UserController extends BaseController {
             }
             if (user.getPasswordTrade() != null && user.getPasswordTrade().equals(CommonUtil.generatePwd(passwordTrade))) {
                 if (user.getBalance() >= money) {
-                    WithDraw withDraw = new WithDraw();
-                    withDraw.setStatus(WithDrawStatus.CHECKING);
-                    withDraw.setCreateTime(CommonUtil.getTokenDateTime(0));
-                    withDraw.setUid(user.getUid());
-                    withDraw.setBcid(cardId.longValue());
-                    withDraw.setMoney(money);
-                    withDrawRepo.save(withDraw);
-                    userRepo.addBalance(user.getUid(), -money);
-                    //保存日志 log_balance
-                    LogBalance log = new LogBalance();
-                    log.setUid(user.getUid());
-                    log.setAmount(money);
-                    log.setType(TranType.WITHDRAW);
-                    log.setLogTime(withDraw.getCreateTime());
-                    log.setRefId(withDraw.getId());
-                    logBalanceRepo.save(log);
-                    return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
+                    try {
+                        withDrawService.userWithRrawCommit(user, cardId, money);
+                        return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return ApiFactory.createResult(1, "提交失败，系统错误", null);
+                    }
+
                 } else {
                     return ApiFactory.createResult(1, "云币不足", null);
                 }
