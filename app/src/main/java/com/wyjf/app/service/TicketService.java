@@ -130,4 +130,16 @@ public class TicketService {
         }
         return map;
     }
+
+    private static final String SQL_123PRIZE = "select concat(left(u.phone,3),'****', right(u.phone,4)) phone,\n" +
+            " (select concat(province,' ',city) as loc from phone_addr where phone_prefix= left(u.phone, 7) limit 1) loc,\n" +
+            " w.win_amount, concat('/api/user/head/',u.uid,'/', UNIX_TIMESTAMP(now()),'/head.png') as head_url \n" +
+            " from ticket_result_win w join ticket t on w.tid = t.tid left join `user` u on t.uid = u.uid\n" +
+            " where w.did = ? order by w.win_amount desc\n" +
+            " limit 3";
+
+    public List<Map<String, Object>> find123prize(long did) {
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(SQL_123PRIZE, did);
+        return list;
+    }
 }

@@ -1,7 +1,11 @@
 package com.wyjf.app.api;
 
+import com.wyjf.app.service.DrawService;
 import com.wyjf.app.service.SystemParamService;
+import com.wyjf.app.service.TicketService;
 import com.wyjf.common.domain.Draw;
+import com.wyjf.common.domain.User;
+import com.wyjf.common.message.ApiCode;
 import com.wyjf.common.message.DrawEx;
 import com.wyjf.common.repository.DrawRepo;
 import io.swagger.annotations.Api;
@@ -32,6 +36,12 @@ public class DrawApiController {
 
     @Autowired
     private DrawRepo drawRepo;
+
+    @Autowired
+    private DrawService drawService;
+
+    @Autowired
+    private TicketService ticketService;
 
     /*
     @RequestMapping(value = {"/{date}"}, method = RequestMethod.GET)
@@ -121,6 +131,23 @@ public class DrawApiController {
             list.add(d.toLocalDate().toString() + " " + d.toLocalDate().format(formatter));
         }
         return ApiFactory.createResult(list);
+    }
+
+
+    @RequestMapping(value = {"/detail"}, method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "did", value = "票ID", required = true, paramType = "query", dataType = "Long"),
+    })
+    @ApiOperation(value = "查看盘口详细", notes = "查询盘口详细信息接口(status:0未结账;1已结账),返回状态码code:\n" +
+            "*  0: 成功\n",
+            produces = "application/json")
+    public ApiResult detail(
+            @RequestParam long did
+    ) {
+        Map<String, Object> map = drawService.detail(did);
+        List<Map<String, Object>> list123 = ticketService.find123prize(did);
+        map.put("prize123", list123);
+        return ApiFactory.createResult(map);
     }
 
 }

@@ -6,6 +6,7 @@ import com.wyjf.common.repository.DrawRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,9 @@ import java.util.Map;
 @Service
 public class DrawService {
     private static final Logger log = LoggerFactory.getLogger(DrawService.class);
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private DrawRepo repo;
@@ -55,6 +59,20 @@ public class DrawService {
             repo.save(draw);
         }
         return true;
+    }
+
+
+    private static final String SQL_DETAIL = "select d.did, d.draw_day, d.draw_seq,  d.amount_up, d.amount_down, d.status,\n" +
+            " DATE_FORMAT(d.start_date,'%Y-%m-%d %H:%i:%s') as start_date,\n" +
+            " DATE_FORMAT(d.end_date,'%Y-%m-%d %H:%i:%s') as end_date,\n" +
+            " ifnull(r.start_price,0) as start_price, ifnull(r.end_price,0) as end_price, ifnull(r.result, -1) as result_direction\n" +
+            " from draw d left join draw_result r on d.did = r.did" +
+            " where d.did = ?";
+
+    public Map<String, Object> detail(long tid) {
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(SQL_DETAIL, tid);
+        if (list.size() > 0) return list.get(0);
+        else return null;
     }
 
 }

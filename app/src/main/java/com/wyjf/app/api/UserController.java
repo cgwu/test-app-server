@@ -539,6 +539,7 @@ public class UserController extends BaseController {
                 if (user.getBalance() >= money) {
                     try {
                         withDrawService.userWithRrawCommit(user, cardId, money);
+                        user = userRepo.findOne(user.getUid());
                         return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
                     }catch (Exception e){
                         e.printStackTrace();
