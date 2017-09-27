@@ -6,6 +6,7 @@ import com.wyjf.common.constant.TranType;
 import com.wyjf.common.constant.WithDrawStatus;
 import com.wyjf.common.domain.*;
 import com.wyjf.common.message.UserResult;
+import com.wyjf.common.message.WithDrawResult;
 import com.wyjf.common.repository.*;
 import com.wyjf.common.util.CommonUtil;
 import io.swagger.annotations.Api;
@@ -43,6 +44,8 @@ public class UserController extends BaseController {
     private BankCardRepo bankCardRepo;
     @Autowired
     private WithDrawService withDrawService;
+    @Autowired
+    private WithDrawRepo withDrawRepo;
     @Autowired
     private QuestionRepo questionRepo;
 
@@ -554,6 +557,31 @@ public class UserController extends BaseController {
             }
         } else {
             return ApiFactory.createResult(1, "用户不存在", null);
+        }
+    }
+
+    @ApiOperation(value = "获取提现详情信息（需传token）", notes = "status: 0 = 审核中," +
+            "1 = 审核成功," +
+            "2 = 审核不通过,", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "wId", value = "提现ID", required = true, paramType = "query", dataType = "Int"),
+            @ApiImplicitParam(name = "token", value = "用户Token", required = true, paramType = "query", dataType = "String")
+    })
+    @RequestMapping(value = {"/userWithDrawInfo"}, method = RequestMethod.POST)
+    public ApiResult userWithDrawInfo(@RequestParam Integer userId, @RequestParam Integer wId, @RequestParam String token) {
+
+        if (!checkTokenAndUserId(token, userId)) {
+            return ApiFactory.createResult(8, "请重新登陆", null);
+        }
+
+        WithDraw withDraw = withDrawRepo.findOne(wId.longValue());
+        if (withDraw != null){
+            BankCard bankCard = bankCardRepo.findOne(withDraw.getBcid());
+            WithDrawResult withDrawResult = new WithDrawResult(withDraw, bankCard);
+            return ApiFactory.createResult(0, "", withDrawResult);
+        } else {
+            return ApiFactory.createResult(1, "记录不存在", null);
         }
     }
 

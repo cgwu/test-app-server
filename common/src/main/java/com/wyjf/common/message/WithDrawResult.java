@@ -15,6 +15,10 @@ public class WithDrawResult extends WithDraw {
         this.user = u;
         this.bankCard = bankCard;
     }
+    public WithDrawResult(WithDraw withDraw, BankCard bankCard){
+        super(withDraw);
+        this.bankCard = bankCard;
+    }
 
     public User getUser() {
         return user;

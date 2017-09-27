@@ -21,7 +21,16 @@ public class WithDraw {
     private String remark;
 
     public WithDraw() {
-
+    }
+    public WithDraw(WithDraw withDraw) {
+        this.id = withDraw.getId();
+        this.uid = withDraw.getUid();
+        this.bcid = withDraw.getBcid();
+        this.money = withDraw.getMoney();
+        this.createTime = withDraw.getCreateTime();
+        this.handingTime = withDraw.getHandingTime();
+        this.status = withDraw.getStatus();
+        this.remark = withDraw.getRemark();
     }
 
     public Long getId() {
