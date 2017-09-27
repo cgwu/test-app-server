@@ -1,5 +1,7 @@
 package com.wyjf.common.util;
 
+import org.springframework.util.StringUtils;
+
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -133,9 +135,10 @@ public class CommonUtil {
     /**
      * 获取当前时间加天数
      * days 传进来的天数，负数减天数
+     *
      * @return
      */
-    public static LocalDateTime getTokenDateTime(int days){
+    public static LocalDateTime getTokenDateTime(int days) {
         LocalDateTime time = LocalDateTime.now();
         return time.plusDays(days);
     }
@@ -145,18 +148,18 @@ public class CommonUtil {
 
     /**
      * 按时间获取流水号
+     *
      * @return
      */
-    public static String getSerialNO(){
+    public static String getSerialNO() {
         Random random = new Random();
-        return LocalDateTime.now().format(fmtSerialNO) + String.format("%03d",random.nextInt(1000));
+        return LocalDateTime.now().format(fmtSerialNO) + String.format("%03d", random.nextInt(1000));
     }
 
     /**
      * 根据用户名的不同长度，来进行替换 ，达到保密效果
      *
-     * @param userName
-     *            用户名
+     * @param userName 用户名
      * @return 替换后的用户名
      */
     public static String userNameReplaceWithStar(String userName) {
@@ -194,10 +197,8 @@ public class CommonUtil {
     /**
      * 实际替换动作
      *
-     * @param username
-     *            username
-     * @param regular
-     *            正则
+     * @param username username
+     * @param regular  正则
      * @return
      */
     private static String replaceAction(String username, String regular) {
@@ -206,11 +207,10 @@ public class CommonUtil {
 
     /**
      * 身份证号替换，保留前四位和后四位
-     *
+     * <p>
      * 如果身份证号为空 或者 null ,返回null ；否则，返回替换后的字符串；
      *
-     * @param idCard
-     *            身份证号
+     * @param idCard 身份证号
      * @return
      */
     public static String idCardReplaceWithStar(String idCard) {
@@ -224,16 +224,14 @@ public class CommonUtil {
 
     /**
      * 银行卡替换，保留后四位
-     *
+     * <p>
      * 如果银行卡号为空 或者 null ,返回null ；否则，返回替换后的字符串；
      *
-     * @param bankCard
-     *            银行卡号
+     * @param bankCard 银行卡号
      * @return
      */
     public static String bankCardReplaceWithStar(String bankCard) {
-
-        if (bankCard.isEmpty() || bankCard == null) {
+        if (StringUtils.isEmpty(bankCard)) {
             return null;
         } else {
             return replaceAction(bankCard, "(?<=\\d{0})\\d(?=\\d{4})");

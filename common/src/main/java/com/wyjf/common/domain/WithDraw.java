@@ -1,5 +1,7 @@
 package com.wyjf.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,7 +17,9 @@ public class WithDraw {
     private Long uid;
     private Long bcid;
     private Double money;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime handingTime;
     private Integer status;
     private String remark;

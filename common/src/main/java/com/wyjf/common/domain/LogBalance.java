@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
         ),
         @NamedNativeQuery(name = "queryLogBalanceBc", resultSetMapping = "queryLogBalanceBcMap",
                 query = "SELECT " +
-                        "lb.lid, lb.uid, lb.amount, lb.`type`, lb.tag, lb.ref_id AS refId, lb.log_time AS logTime, bc.card_number AS cardNumber, bc.bank AS bank " +
+                        "lb.lid, lb.uid, lb.amount, lb.`type`, lb.tag, lb.ref_id AS refId, lb.log_time AS logTime, bc.card_number AS cardNumber, bc.bank AS bank, w.status " +
                         "FROM " +
                         "log_balance lb " +
                         "LEFT JOIN withdraw w ON w.id = lb.ref_id " +
@@ -59,6 +59,7 @@ import java.time.LocalDateTime;
                                         @ColumnResult(name = "logTime", type = LocalDateTime.class),
                                         @ColumnResult(name = "cardNumber", type = String.class),
                                         @ColumnResult(name = "bank", type = String.class),
+                                        @ColumnResult(name = "status", type = Integer.class),
                                 }
                         )
                 })

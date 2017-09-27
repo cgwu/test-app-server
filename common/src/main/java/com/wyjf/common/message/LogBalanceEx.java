@@ -16,14 +16,17 @@ public class LogBalanceEx extends LogBalance {
         this.drawDay = drawDay;
     }
 
-    public LogBalanceEx(long lid, long uid, double amount, int type, Integer tag, Long refId, LocalDateTime logTime, String cardNumber, String bank) {
+    public LogBalanceEx(long lid, long uid, double amount, int type, Integer tag, Long refId, LocalDateTime logTime, String cardNumber, String bank, Integer status) {
         super(lid, uid, amount, type, tag, refId, logTime);
         this.cardNumber = CommonUtil.bankCardReplaceWithStar(cardNumber);
         this.bank = bank;
+        this.status = status;
     }
+
     private LocalDate drawDay;
     private String cardNumber;
     private String bank;
+    private Integer status;
 
     public String getCardNumber() {
         return cardNumber;
@@ -49,9 +52,17 @@ public class LogBalanceEx extends LogBalance {
         this.drawDay = drawDay;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return super.toString()+ " >> LogBalanceEx{" +
+        return super.toString() + " >> LogBalanceEx{" +
                 "drawDay=" + drawDay +
                 '}';
     }
