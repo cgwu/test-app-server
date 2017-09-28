@@ -26,4 +26,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     @Modifying
     @Query(value="update user set balance = balance + :amt where uid = :uid", nativeQuery = true)
     public void addBalance(@Param("uid") long uid, @Param("amt") double amt);
+
+    @Query(value="select u.balance from user u where u.uid = :uid", nativeQuery = true)
+    public Double findUserBalance(@Param("uid") long uid);
 }

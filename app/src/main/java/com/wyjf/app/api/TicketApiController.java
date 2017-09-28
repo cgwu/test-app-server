@@ -78,7 +78,7 @@ public class TicketApiController {
         ticket.setStatus(0);
 
         Pair<Integer, String> result = ticketService.buy(ticket);
-        return ApiFactory.createResult(result.getFirst(), result.getSecond(), null);
+        return ApiFactory.createResult(result.getFirst(), result.getSecond(), result.getFirst() == 0 ? userRepo.findUserBalance(user.getUid()):null);
     }
 
 

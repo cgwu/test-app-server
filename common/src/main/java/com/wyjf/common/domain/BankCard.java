@@ -18,6 +18,15 @@ public class BankCard {
     private String realName;
     private String openBank;
     private String bank;
+    private Integer isDel;
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
+    }
 
     public Long getId() {
         return id;
@@ -40,7 +49,7 @@ public class BankCard {
     }
 
     public void setCardNumber(String cardNumber) {
-        this.cardNumber = CommonUtil.bankCardReplaceWithStar(cardNumber);
+        this.cardNumber = cardNumber;
     }
 
     public String getRealName() {

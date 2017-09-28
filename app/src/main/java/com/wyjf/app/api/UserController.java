@@ -476,6 +476,7 @@ public class UserController extends BaseController {
         bankCard.setBank(bankName);
         bankCard.setRealName(realName);
         bankCard.setOpenBank(openBank);
+        bankCard.setIsDel(0);
         bankCardRepo.save(bankCard);
         return ApiFactory.createResult(0, "添加成功", null);
     }
@@ -488,11 +489,11 @@ public class UserController extends BaseController {
     @RequestMapping(value = {"/userBankInfo"}, method = RequestMethod.POST)
     public ApiResult userBankInfo(@RequestParam Integer userId, @RequestParam String token) {
 
+
         if (!checkTokenAndUserId(token, userId)) {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
-
-        return ApiFactory.createResult(0, "添加成功", bankCardRepo.findByUid(userId.longValue()));
+        return ApiFactory.createResult(0, "", bankCardRepo.findByUidAndIsDel(userId.longValue(), 0));
     }
 
     @ApiOperation(value = "解绑银行卡（需传token）", notes = "", produces = "application/json")
@@ -509,8 +510,10 @@ public class UserController extends BaseController {
         }
 
         BankCard bankCard = bankCardRepo.findOne(cardId.longValue());
+
         if (bankCard != null) {
-            bankCardRepo.delete(bankCard);
+            bankCard.setIsDel(1);
+            bankCardRepo.save(bankCard);
             return ApiFactory.createResult(0, "解绑成功", null);
         } else {
             return ApiFactory.createResult(1, "银行卡不存在", null);
@@ -542,8 +545,7 @@ public class UserController extends BaseController {
                 if (user.getBalance() >= money) {
                     try {
                         withDrawService.userWithRrawCommit(user, cardId, money);
-                        user = userRepo.findOne(user.getUid());
-                        return ApiFactory.createResult(0, "提交成功，等待审核", user.getBalance());
+                        return ApiFactory.createResult(0, "提交成功，等待审核", userRepo.findUserBalance(userId.longValue()));
                     }catch (Exception e){
                         e.printStackTrace();
                         return ApiFactory.createResult(1, "提交失败，系统错误", null);

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface BankCardRepo extends JpaRepository<BankCard, Long>{
 
-    public List<BankCard> findByUid(Long uid);
+    public List<BankCard> findByUidAndIsDel(Long uid, Integer isDel);
 
     @Query(value = "SELECT " +
             "bc " +

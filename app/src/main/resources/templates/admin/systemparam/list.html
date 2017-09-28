@@ -136,7 +136,9 @@
                     {
                         data: 'id',
                         render: function ( data, type, full, meta ) {
-                            return "";
+                            return '<a class="btn btn-white btn-info tb-row-edit">\
+                                    <i class="ace-icon fa fa-pencil-square"></i>\
+                                    编辑</a>';
                         },
                         orderable: false
                     }
@@ -154,6 +156,12 @@
                     loadingIndicator: true
                 }
             }
+        });
+
+        grid.getTableWrapper().on('click', '.tb-row-edit', function (e) {
+            e.preventDefault();
+            var rowData = grid.getDataTable().row($(this).closest('tr')).data();
+            console.log('DT_RowData',rowData.id, rowData);
         });
 
         // handle group actionsubmit button click
