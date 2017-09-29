@@ -1,6 +1,7 @@
 package com.wyjf.app.web.admin;
 
 import com.wyjf.app.service.WithDrawService;
+import com.wyjf.common.constant.WithDrawStatus;
 import com.wyjf.common.domain.WithDraw;
 import com.wyjf.common.message.WithDrawRequest;
 import com.wyjf.common.message.WithDrawResult;
@@ -11,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -52,5 +50,35 @@ public class WithDrawController {
         map.put("recordsTotal", resultMap.get("count"));
         map.put("recordsFiltered", resultMap.get("count"));
         return map;
+    }
+
+    @RequestMapping(value = "/tongguo", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<Object, Object> tongguo(@RequestParam Integer id) {
+        try {
+            withDrawService.updateWithDraw(id, 1);
+            HashMap map = new HashMap();
+            map.put("msg", "1");
+            return map;
+        } catch (Exception e) {
+            HashMap map = new HashMap();
+            map.put("msg", "0");
+            return map;
+        }
+    }
+
+    @RequestMapping(value = "/butongguo", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<Object, Object> butongguo(@RequestParam Integer id) {
+        try {
+            withDrawService.updateWithDraw(id, 0);
+            HashMap map = new HashMap();
+            map.put("msg", "1");
+            return map;
+        } catch (Exception e) {
+            HashMap map = new HashMap();
+            map.put("msg", "0");
+            return map;
+        }
     }
 }

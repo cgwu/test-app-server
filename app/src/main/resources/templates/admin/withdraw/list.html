@@ -75,54 +75,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-
-
-            </div>
-        </div>
-    </div>
-    <div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable ui-resizable"
-         tabindex="-1" role="dialog" aria-describedby="dialog-message" aria-labelledby="ui-id-34"
-         style="position: absolute; height: auto; width: 300px; top: 39px; left: 802px; display: none;">
-        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix ui-draggable-handle"><span
-                id="ui-id-34" class="ui-dialog-title"><div class="widget-header widget-header-small"><h4
-                class="smaller"><i class="ace-icon fa fa-check"></i> jQuery UI Dialog</h4></div></span>
-            <button type="button"
-                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
-                    role="button" title="Close"><span
-                    class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span
-                    class="ui-button-text">Close</span></button>
-        </div>
-        <div id="dialog-message" class="ui-dialog-content ui-widget-content"
-             style="width: auto; min-height: 30px; max-height: none; height: auto;">
-            <p>
-                This is the default dialog which is useful for displaying information. The dialog window can be moved,
-                resized and closed with the 'x' icon.
-            </p>
-
-            <div class="hr hr-12 hr-double"></div>
-
-            <p>
-                Currently using
-                <b>36% of your storage space</b>.
-            </p>
-        </div>
-        <div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"
-             style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
-        <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <div class="ui-dialog-buttonset">
-                <button type="button"
-                        class="btn btn-minier ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                        role="button"><span class="ui-button-text">Cancel</span></button>
-                <button type="button"
-                        class="btn btn-primary btn-minier ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                        role="button"><span class="ui-button-text">OK</span></button>
             </div>
         </div>
     </div>
@@ -198,8 +150,8 @@
                         {
                             data: 'id',
                             render: function (data, type, full, meta) {
-                                return "<button onclick='tongguo(this)' oid='" + data + "' class='btn btn-info btn-sm'>审核通过</button> " +
-                                        "<button onclick='butongguo(this)' oid='" + data + "' class='btn btn-purple btn-sm'>审核不通过</button>";
+                                return "<button oid='" + data + "' class='btn btn-info btn-sm btn-tongguo'>审核通过</button> " +
+                                        "<button oid='" + data + "' class='btn btn-purple btn-sm btn-butongguo'>审核不通过</button>";
                             },
                             orderable: false
                         }
@@ -252,6 +204,38 @@
                 }
             });
 
+            grid.getTableWrapper().on('click', '.btn-tongguo', function (e) {
+                e.preventDefault();
+                var rowData = grid.getDataTable().row($(this).closest('tr')).data();
+                if (confirm("审核不通过，确认提交？")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/withdraw/tongguo',
+                        data: {"id": rowData.id},
+                        dataType: "json",
+                        success: function(data){
+                            grid.getDataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
+
+            grid.getTableWrapper().on('click', '.btn-butongguo', function (e) {
+                e.preventDefault();
+                var rowData = grid.getDataTable().row($(this).closest('tr')).data();
+                if (confirm("审核不通过，确认提交？")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/withdraw/butongguo',
+                        data: {"id": rowData.id},
+                        dataType: "json",
+                        success: function(data){
+                            grid.getDataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
+
             //grid.setAjaxParam("customActionType", "group_action");
             //grid.getDataTable().ajax.reload();
             //grid.clearAjaxParams();
@@ -259,29 +243,6 @@
 
         $(function () {
             fnInitTable();
-            function tongguo(v) {
-                var dialog = $("#dialog-message").removeClass('hide').dialog({
-                    modal: true,
-                    title: "<div class='widget-header widget-header-small'><h4 class='smaller'><i class='ace-icon fa fa-check'></i>确认已经转账了吗？</h4></div>",
-                    title_html: true,
-                    buttons: [
-                        {
-                            text: "取消",
-                            "class": "btn btn-minier",
-                            click: function () {
-                                $(this).dialog("close");
-                            }
-                        },
-                        {
-                            text: "提交",
-                            "class": "btn btn-primary btn-minier",
-                            click: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    ]
-                });
-            }
         });
     </script>
 </th:block>

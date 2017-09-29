@@ -213,16 +213,16 @@ public class CommonUtil {
      * @param idCard 身份证号
      * @return
      */
-    public static String idCardReplaceWithStar(String idCard) {
 
-        if (idCard.isEmpty() || idCard == null) {
-            return null;
-        } else {
-            return replaceAction(idCard, "(?<=\\d{4})\\d(?=\\d{4})");
-        }
-    }
 
-    /**
+    /**public static String idCardReplaceWithStar(String idCard) {
+
+     if (idCard.isEmpty() || idCard == null) {
+     return null;
+     } else {
+     return replaceAction(idCard, "(?<=\\d{4})\\d(?=\\d{4})");
+     }
+     }
      * 银行卡替换，保留后四位
      * <p>
      * 如果银行卡号为空 或者 null ,返回null ；否则，返回替换后的字符串；

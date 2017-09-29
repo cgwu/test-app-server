@@ -96,4 +96,30 @@ public class WithDrawService {
         log.setRefId(withDraw.getId());
         logBalanceRepo.save(log);
     }
+
+    @Transactional
+    public void updateWithDraw(Integer id, Integer type){
+        WithDraw withDraw = withDrawRepo.findOne(id.longValue());
+        if(withDraw != null && withDraw.getStatus() == WithDrawStatus.CHECKING && type == 1){
+            withDraw.setStatus(WithDrawStatus.CHECKSUCCESS);
+            withDraw.setHandingTime(CommonUtil.getTokenDateTime(0));
+            withDrawRepo.save(withDraw);
+        }else{
+            if(withDraw.getStatus() == WithDrawStatus.CHECKING){
+                withDraw.setStatus(WithDrawStatus.CHECKFAIL);
+                withDraw.setHandingTime(CommonUtil.getTokenDateTime(0));
+                withDrawRepo.save(withDraw);
+                userRepo.addBalance(withDraw.getUid(), +withDraw.getMoney());
+                //保存日志 log_balance
+                LogBalance log = new LogBalance();
+                log.setUid(withDraw.getUid());
+                log.setAmount(+withDraw.getMoney());
+                log.setType(TranType.WITHDRAW);
+                log.setLogTime(withDraw.getCreateTime());
+                log.setRefId(withDraw.getId());
+                logBalanceRepo.save(log);
+            }
+        }
+
+    }
 }
