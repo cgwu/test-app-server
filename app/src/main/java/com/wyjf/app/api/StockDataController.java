@@ -63,19 +63,19 @@ public class StockDataController {
     )
     public ApiResult stockdatam(@RequestParam String date){
         List list = stockDataRepo.findSockDataMin(date);
-        return ApiFactory.createResult(list.get(0));
+        return ApiFactory.createResult(list.size() > 0 ? list.get(0) : null);
     }
     @ApiOperation(value = "获取参数传进来那天最新1小时的k数据", notes = "获取参数传进来那天最新1小时的k数据接口", produces = "application/json")
     @RequestMapping(value = {"/h"}, method = RequestMethod.POST)
     public ApiResult stockdatah(){
         List list = stockDataRepo.findSockDataHour();
-        return ApiFactory.createResult(list.get(0));
+        return ApiFactory.createResult(list.size() > 0 ? list.get(0) : null);
     }
     @ApiOperation(value = "获取参数传进来那天最新1天的k数据", notes = "获取参数传进来那天最新1小时的k数据接口", produces = "application/json")
     @RequestMapping(value = {"/d"}, method = RequestMethod.POST)
     public ApiResult stockdatad(){
         List list = stockDataRepo.findSockDataDay();
-        return ApiFactory.createResult(list.get(0));
+        return ApiFactory.createResult(list.size() > 0 ? list.get(0) : null);
     }
 
     @ApiOperation(value = "分Ctestststststsett", notes = "分时K线数据接口", produces = "application/json")
