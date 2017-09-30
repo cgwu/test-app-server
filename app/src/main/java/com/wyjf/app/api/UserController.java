@@ -179,10 +179,10 @@ public class UserController extends BaseController {
             if (result.getFirst() == 0) {
                 return ApiFactory.createResult(0, "获取验证码成功", "");
             } else {
-                return ApiFactory.createResult(result.getFirst(), result.getSecond(), v);
+                return ApiFactory.createResult(result.getFirst(), result.getSecond(), "");
             }
         } else {
-            return ApiFactory.createResult(1, "获取验证码失败", null);
+            return ApiFactory.createResult(1, "获取验证码失败", "");
         }
     }
 
