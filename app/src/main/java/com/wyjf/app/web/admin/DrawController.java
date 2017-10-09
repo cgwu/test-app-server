@@ -3,6 +3,7 @@ package com.wyjf.app.web.admin;
 import com.querydsl.core.types.Predicate;
 import com.wyjf.app.api.ApiFactory;
 import com.wyjf.app.api.ApiResult;
+import com.wyjf.app.service.DrawResultService;
 import com.wyjf.app.service.DrawService;
 import com.wyjf.common.domain.Draw;
 import com.wyjf.common.domain.QDraw;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -48,6 +51,9 @@ public class DrawController {
     @Autowired
     private DrawService drawService;
 
+    @Autowired
+    DrawResultService drawResultService;
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list() {
         return "admin/draw/list";
@@ -57,17 +63,16 @@ public class DrawController {
     @ResponseBody
     public Map<Object, Object> listQuery(@ModelAttribute DrawQueryRequest req) {
         LocalDate drawDay = LocalDate.now();
-        Predicate predicate =null;
-        if(!StringUtils.isEmpty(req.getDrawDay())){
+        Predicate predicate = null;
+        if (!StringUtils.isEmpty(req.getDrawDay())) {
             drawDay = LocalDate.parse(req.getDrawDay());
             predicate = QDraw.draw.drawDay.eq(drawDay);
-        }
-        else
+        } else
             predicate = QDraw.draw.drawDay.goe(drawDay);
 
         PageRequest pReq = req.getPage(http);
 
-        Page<Draw> rows = drawRepo.findAll(predicate,pReq);
+        Page<Draw> rows = drawRepo.findAll(predicate, pReq);
         HashMap map = new HashMap();
         map.put("data", rows.getContent());
         map.put("draw", req.getDraw());
@@ -85,6 +90,13 @@ public class DrawController {
             return ApiFactory.success(drawDay + "盘口保存成功!");
         else
             return ApiFactory.fail(-1, drawDay + "盘口保存失败，请勿重复添加!");
+    }
+
+    @RequestMapping(value = "/process/{drawId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResult process(@NotNull @PathVariable Long drawId) {
+        Pair<Integer, String> res = drawResultService.process(drawId);
+        return ApiFactory.createResult(res.getFirst(), res.getSecond(), null);
     }
 
 }

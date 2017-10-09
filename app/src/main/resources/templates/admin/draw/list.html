@@ -133,11 +133,18 @@
                         { data:'endDate'},
                         { data:'amountUp'},
                         { data:'amountDown'},
-                        { data:'status'},
+                        {
+                            data:'status',
+                            render: function ( data, type, full, meta ) {
+                                return data == 0? '<i class="btn btn-minier btn-purple">未结账</i>'
+                                        :'<i class="btn btn-minier btn-primary">已结账</i>';
+                            },
+                        },
                         {
                             data: 'did',
                             render: function ( data, type, full, meta ) {
-                                return "";
+                                return '<a class="btn btn-white btn-info tb-row-process">\
+                                    结账</a>';
                             },
                             orderable: false
                         }
@@ -159,6 +166,23 @@
                         loadingIndicator: true
                     }
                 }
+            });
+
+            grid.getTableWrapper().on('click', '.tb-row-process', function (e) {
+                e.preventDefault();
+                var rowData = grid.getDataTable().row($(this).closest('tr')).data();
+//                console.log('DT_RowData',rowData.did, rowData);
+                bootbox.setDefaults("locale","zh_CN");
+                bootbox.confirm("确定对该盘口"+"[ "+rowData.startDate+" ~ "+rowData.endDate+" ]"+"进行结账操作吗？",function(res){
+                    if(res) {
+                        $.get('/admin/draw/process/'+rowData.did, function(rsp){
+                            bootbox.alert(rsp.msg);
+                            if(rsp.code == 0){
+                                grid.getDataTable().ajax.reload();
+                            }
+                        });
+                    }
+                });
             });
 
             // handle group actionsubmit button click
