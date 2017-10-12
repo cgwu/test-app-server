@@ -81,6 +81,7 @@
     </div>
 
     <div th:replace="admin/systemparam/add"></div>
+    <div th:replace="admin/systemparam/edit"></div>
 
 </div>
 
@@ -136,7 +137,7 @@
                     {
                         data: 'id',
                         render: function ( data, type, full, meta ) {
-                            return '<a class="btn btn-white btn-info tb-row-edit">\
+                            return '<a href="#modal-edit" data-toggle="modal" class="btn btn-white btn-info tb-row-edit">\
                                     <i class="ace-icon fa fa-pencil-square"></i>\
                                     编辑</a>';
                         },
@@ -161,7 +162,10 @@
         grid.getTableWrapper().on('click', '.tb-row-edit', function (e) {
             e.preventDefault();
             var rowData = grid.getDataTable().row($(this).closest('tr')).data();
-            console.log('DT_RowData',rowData.id, rowData);
+//            console.log('DT_RowData',rowData.id, rowData);
+            for(attr in rowData){
+                $("#modal-edit").find("[name='"+attr+"']").val(rowData[attr]);
+            }
         });
 
         // handle group actionsubmit button click
@@ -206,6 +210,19 @@
             $(this).ajaxSubmit({
                 success:function(rsp) {
                     if(rsp.code == 0){
+                        grid.getDataTable().ajax.reload();
+                    }
+                    bootbox.alert(rsp.msg);
+                }
+            });
+        });
+
+        $('#frmEdit').on('submit', function(e) {
+            e.preventDefault();
+            $(this).ajaxSubmit({
+                success:function(rsp) {
+                    if(rsp.code == 0){
+                        $("#modal-edit").modal('hide');
                         grid.getDataTable().ajax.reload();
                     }
                     bootbox.alert(rsp.msg);

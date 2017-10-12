@@ -68,9 +68,25 @@ public class SystemParamController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult addByDate(@ModelAttribute SystemParam param) {
+    public ApiResult add(@ModelAttribute SystemParam param) {
         repo.save(param);
         return ApiFactory.success("保存成功!");
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult edit(@ModelAttribute SystemParam param) {
+        SystemParam model = repo.findOne(param.getId());
+        if(model== null){
+            return ApiFactory.fail(-1,"修改项不存在!");
+        }
+        model.setDataKey(param.getDataKey());
+        model.setDataVal(param.getDataVal());
+        model.setSortId(param.getSortId());
+        model.setPid(param.getPid());
+        model.setComment(param.getComment());
+        repo.save(model);
+        return ApiFactory.success("修改成功!");
     }
 
 }
