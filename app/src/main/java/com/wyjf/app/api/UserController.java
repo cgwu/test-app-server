@@ -49,6 +49,8 @@ public class UserController extends BaseController {
     @Autowired
     private QuestionRepo questionRepo;
 
+
+
     @ApiOperation(value = "注册", notes = "用户注册接口", produces = "application/json")
     @RequestMapping(value = {"/reg"}, method = RequestMethod.POST)
     @ApiImplicitParams(value = {
@@ -109,7 +111,7 @@ public class UserController extends BaseController {
                     UserInfo userInfo = userInfoRepo.findOne(user.getUid());
                     UserResult userResult = new UserResult(user, userInfo);
                     List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                    if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                    if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                         userResult.setCardId(bankCard.get(0).getId());
                         userResult.setBank(bankCard.get(0).getBank());
                         userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -131,7 +133,7 @@ public class UserController extends BaseController {
                     UserInfo userInfo = userInfoRepo.findOne(user.getUid());
                     UserResult userResult = new UserResult(user, userInfo);
                     List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                    if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                    if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                         userResult.setCardId(bankCard.get(0).getId());
                         userResult.setBank(bankCard.get(0).getBank());
                         userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -211,7 +213,7 @@ public class UserController extends BaseController {
         if (user != null && user.getUid() != null) {
             UserResult userResult = new UserResult(user, userinfo);
             List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-            if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+            if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                 userResult.setCardId(bankCard.get(0).getId());
                 userResult.setBank(bankCard.get(0).getBank());
                 userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -270,7 +272,7 @@ public class UserController extends BaseController {
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
                 List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                     userResult.setCardId(bankCard.get(0).getId());
                     userResult.setBank(bankCard.get(0).getBank());
                     userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -306,7 +308,7 @@ public class UserController extends BaseController {
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
                 List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                     userResult.setCardId(bankCard.get(0).getId());
                     userResult.setBank(bankCard.get(0).getBank());
                     userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -337,7 +339,7 @@ public class UserController extends BaseController {
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
                 List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                     userResult.setCardId(bankCard.get(0).getId());
                     userResult.setBank(bankCard.get(0).getBank());
                     userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -377,7 +379,7 @@ public class UserController extends BaseController {
                 UserInfo userinfo = userInfoRepo.findOne(user.getUid());
                 UserResult userResult = new UserResult(user, userinfo);
                 List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+                if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                     userResult.setCardId(bankCard.get(0).getId());
                     userResult.setBank(bankCard.get(0).getBank());
                     userResult.setCardNumber(bankCard.get(0).getCardNumber());
@@ -427,7 +429,7 @@ public class UserController extends BaseController {
             }
             UserResult userResult = new UserResult(user, userInfo);
             List<BankCard> bankCard = bankCardRepo.findByUidAsOne(user.getUid());
-            if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null){
+            if(bankCard != null && bankCard.size() > 0 && bankCard.get(0) != null && bankCard.get(0).getIsDel() != 1){
                 userResult.setCardId(bankCard.get(0).getId());
                 userResult.setBank(bankCard.get(0).getBank());
                 userResult.setCardNumber(bankCard.get(0).getCardNumber());
