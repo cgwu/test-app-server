@@ -53,6 +53,7 @@ public class TicketService {
      * 3: 会员不存在
      * 4: 会员余额不足
      * 5: 金额有误
+     * 6: "买注手续费设置有误"
      */
     @Transactional
     public Pair<Integer, String> buy(Ticket ticket) {
@@ -77,12 +78,16 @@ public class TicketService {
             return Pair.of(3, "会员不存在");
         }
         // 检查金额
-        if (u.getBalance() < ticket.getRealAmount()) {
+        double commCharge = systemParamService.getBuyCommisionCharge();
+        if (commCharge < 0) {
+            return Pair.of(6, "买注手续费设置有误");
+        }
+        if (u.getBalance() < ticket.getRealAmount() + commCharge) {
             return Pair.of(4, "会员余额不足");
         }
 
         // 减去会员金额
-        userRepo.addBalance(ticket.getUid(), -ticket.getAmount());
+        userRepo.addBalance(ticket.getUid(), -(ticket.getAmount() + commCharge));
 
         //保存票
         Ticket saved = ticketRepo.saveAndFlush(ticket);
@@ -103,6 +108,15 @@ public class TicketService {
         log.setRefId(saved.getTid());
         log.setLogTime(ticket.getBuyTime());
         logBalanceRepo.save(log);
+        //手续费
+        LogBalance log2 = new LogBalance();
+        log2.setUid(ticket.getUid());
+        log2.setAmount(-commCharge); //下注金额日志记为负.
+        log2.setType(TranType.LOG_WALLET);
+        log2.setTag(9);
+        log2.setRefId(saved.getTid());
+        log2.setLogTime(ticket.getBuyTime());
+        logBalanceRepo.save(log2);
 
         return Pair.of(0, "成功");
     }

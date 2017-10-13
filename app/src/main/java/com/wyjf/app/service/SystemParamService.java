@@ -52,6 +52,23 @@ public class SystemParamService {
     }
 
     /**
+     * 买注手续费(元)
+     * @return
+     */
+    public double getBuyCommisionCharge() {
+        double val = 0;
+        try {
+            SystemParam param = repo.findByDataKey("DEC_BuyCommCharge");
+            if (param != null) {
+                val = Double.parseDouble(param.getDataVal().toString());
+            }
+        } catch (Exception e) {
+            log.error("Find DEC_BuyCommCharge Exception: {}", e.getMessage());
+        }
+        return val;
+    }
+
+    /**
      * 获取平台收益百分比
      * @return
      */
