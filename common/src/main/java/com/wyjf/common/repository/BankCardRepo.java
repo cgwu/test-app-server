@@ -22,4 +22,6 @@ public interface BankCardRepo extends JpaRepository<BankCard, Long>{
             "WHERE wd.uid = :uId " +
             "ORDER BY wd.id DESC ")
     public List<BankCard> findByUidAsOne(@Param("uId") Long uId);
+
+    public List<BankCard> findByCardNumberAndIsDel(String cardNumber, Integer isDel);
 }

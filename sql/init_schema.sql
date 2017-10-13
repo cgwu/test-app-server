@@ -147,6 +147,7 @@ create table ticket
   primary key (tid)
 ) ENGINE=InnoDB;
 
+alter table ticket add fee decimal(19,2) not null default 0 comment '手续费';
 alter table ticket comment '票';
 
 

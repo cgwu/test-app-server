@@ -105,6 +105,7 @@ public class Ticket {
     private int direction;
     private double amount;
     private double realAmount;
+    private double fee;
     private LocalDateTime buyTime;
     private int status;
 
@@ -183,5 +184,13 @@ public class Ticket {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(double fee) {
+        this.fee = fee;
     }
 }

@@ -472,6 +472,11 @@ public class UserController extends BaseController {
             return ApiFactory.createResult(8, "请重新登陆", null);
         }
 
+        List<BankCard> list = bankCardRepo.findByCardNumberAndIsDel(cardNum, 0);
+        if(list != null && list.size() > 0){
+            return ApiFactory.createResult(1, "该银行卡已经绑定", null);
+        }
+
         BankCard bankCard = new BankCard();
         bankCard.setUid(userId.longValue());
         bankCard.setCardNumber(cardNum);

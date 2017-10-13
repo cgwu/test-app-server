@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @NamedNativeQueries({
         @NamedNativeQuery(name = "queryLogBalanceEx", resultSetMapping = "queryLogBalanceExMap",
-                query = "select b.lid , b.uid, b.amount, b.`type`, b.tag, b.ref_id as refId, b.log_time as logTime, d.draw_day as drawDay " +
+                query = "select b.lid , b.uid, b.amount, -t.fee as fee, b.`type`, b.tag, b.ref_id as refId, b.log_time as logTime, d.draw_day as drawDay " +
                         "from log_balance b left join ticket t on b.ref_id = t.tid left join draw d on t.did = d.did\n" +
                         "where b.uid = ? and b.type= ? " +
                         "order by lid desc limit ?, ?"
@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
                                         @ColumnResult(name = "lid", type = Long.class),
                                         @ColumnResult(name = "uid", type = Long.class),
                                         @ColumnResult(name = "amount", type = Double.class),
+                                        @ColumnResult(name = "fee", type = Double.class),
                                         @ColumnResult(name = "type", type = Integer.class),
                                         @ColumnResult(name = "tag", type = Integer.class),
                                         @ColumnResult(name = "refId", type = Long.class),

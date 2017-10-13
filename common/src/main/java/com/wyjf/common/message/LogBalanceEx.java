@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
  * Created by Administrator on 2017/9/20.
  */
 public class LogBalanceEx extends LogBalance {
-    public LogBalanceEx(long lid, long uid, double amount, int type, Integer tag, Long refId, LocalDateTime logTime, LocalDate drawDay) {
+    public LogBalanceEx(long lid, long uid, double amount,double fee, int type, Integer tag, Long refId, LocalDateTime logTime, LocalDate drawDay) {
         super(lid, uid, amount, type, tag, refId, logTime);
         this.drawDay = drawDay;
+        this.fee = fee;
     }
 
     public LogBalanceEx(long lid, long uid, double amount, int type, Integer tag, Long refId, LocalDateTime logTime, String cardNumber, String bank, Integer status) {
@@ -27,6 +28,7 @@ public class LogBalanceEx extends LogBalance {
     private String cardNumber;
     private String bank;
     private Integer status;
+    private Double fee;
 
     public String getCardNumber() {
         return cardNumber;
@@ -58,6 +60,14 @@ public class LogBalanceEx extends LogBalance {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Double getFee() {
+        return fee;
+    }
+
+    public void setFee(Double fee) {
+        this.fee = fee;
     }
 
     @Override

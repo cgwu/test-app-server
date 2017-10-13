@@ -82,6 +82,8 @@ public class TicketService {
         if (commCharge < 0) {
             return Pair.of(6, "买注手续费设置有误");
         }
+        ticket.setFee(commCharge);  //手续费
+
         if (u.getBalance() < ticket.getRealAmount() + commCharge) {
             return Pair.of(4, "会员余额不足");
         }
@@ -108,6 +110,8 @@ public class TicketService {
         log.setRefId(saved.getTid());
         log.setLogTime(ticket.getBuyTime());
         logBalanceRepo.save(log);
+
+        /*
         //手续费
         LogBalance log2 = new LogBalance();
         log2.setUid(ticket.getUid());
@@ -117,6 +121,7 @@ public class TicketService {
         log2.setRefId(saved.getTid());
         log2.setLogTime(ticket.getBuyTime());
         logBalanceRepo.save(log2);
+        */
 
         return Pair.of(0, "成功");
     }
